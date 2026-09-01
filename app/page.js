@@ -24,7 +24,8 @@ import {
   Ticket,
   PieChart,
   ExternalLink,
-  Languages
+  Languages,
+  RefreshCw
 } from 'lucide-react';
 
 export default function Home() {
@@ -38,6 +39,7 @@ export default function Home() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [regeneratingDay, setRegeneratingDay] = useState(null);
   const [tripPlan, setTripPlan] = useState(null);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
@@ -69,6 +71,36 @@ export default function Home() {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRegenerateDay = async (dayNumber, currentTheme) => {
+    setRegeneratingDay(dayNumber);
+    try {
+      const res = await fetch('/api/regenerate-day', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          destination: tripPlan.destination,
+          dayNumber,
+          currentTheme,
+          budget: formData.budget,
+          interests: formData.interests,
+          language: formData.language,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to regenerate day');
+
+      setTripPlan((prev) => ({
+        ...prev,
+        dailyPlan: prev.dailyPlan.map((d) => (d.day === dayNumber ? data.data : d)),
+      }));
+    } catch (err) {
+      alert(err.message || 'Could not regenerate this day. Try again.');
+    } finally {
+      setRegeneratingDay(null);
     }
   };
 
@@ -330,26 +362,37 @@ export default function Home() {
               </div>
             )}
 
-            {/* Daily Breakdown with Maps Links */}
+            {/* Daily Breakdown with Maps Links & Regenerate Button */}
             <div className="space-y-6">
               <h3 className="text-xl font-bold text-slate-900">Daily Itinerary</h3>
               {tripPlan.dailyPlan?.map((item) => (
                 <div key={item.day} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print:border-slate-300">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-5 gap-3">
                     <div className="flex items-center gap-3">
                       <span className="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm print:bg-slate-800">
                         Day {item.day}
                       </span>
                       <h4 className="font-semibold text-lg text-slate-800">{item.theme}</h4>
                     </div>
-                    <a
-                      href={getMapsUrl(item.theme, tripPlan.destination)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition print:hidden"
-                    >
-                      <MapPin className="w-3.5 h-3.5" /> Explore in Maps <ExternalLink className="w-3 h-3" />
-                    </a>
+                    <div className="flex items-center gap-2 print:hidden">
+                      <button
+                        onClick={() => handleRegenerateDay(item.day, item.theme)}
+                        disabled={regeneratingDay === item.day}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-indigo-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition disabled:opacity-50 cursor-pointer"
+                        title="Generate alternative plan for this day"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 ${regeneratingDay === item.day ? 'animate-spin text-indigo-600' : ''}`} />
+                        {regeneratingDay === item.day ? 'Updating...' : 'Regenerate Day'}
+                      </button>
+                      <a
+                        href={getMapsUrl(item.theme, tripPlan.destination)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition"
+                      >
+                        <MapPin className="w-3.5 h-3.5" /> Explore in Maps <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
