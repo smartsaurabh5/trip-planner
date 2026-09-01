@@ -23,7 +23,8 @@ import {
   Car,
   Ticket,
   PieChart,
-  ExternalLink
+  ExternalLink,
+  Languages
 } from 'lucide-react';
 
 export default function Home() {
@@ -32,7 +33,8 @@ export default function Home() {
     days: '3',
     budget: 'Moderate',
     travelers: '1 Person',
-    interests: 'Sightseeing, Local Food, Photography'
+    interests: 'Sightseeing, Local Food, Photography',
+    language: 'English'
   });
 
   const [loading, setLoading] = useState(false);
@@ -177,21 +179,38 @@ export default function Home() {
                   <option value="Friends Group">Friends Group</option>
                 </select>
               </div>
-            </div>
 
-            {/* Interests */}
-            <div>
-              <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-                <Compass className="w-4 h-4 text-indigo-600" /> Interests & Vibes
-              </label>
-              <input
-                type="text"
-                name="interests"
-                placeholder="e.g., Adventure, Cafes, Historical sites, Nightlife"
-                value={formData.interests}
-                onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-              />
+              {/* Language Selection */}
+              <div>
+                <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                  <Languages className="w-4 h-4 text-indigo-600" /> Itinerary Language
+                </label>
+                <select
+                  name="language"
+                  value={formData.language}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white"
+                >
+                  <option value="English">English</option>
+                  <option value="Hindi">Hindi (हिंदी)</option>
+                  <option value="Hinglish">Hinglish (Casual Hindi in English)</option>
+                </select>
+              </div>
+
+              {/* Interests */}
+              <div>
+                <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                  <Compass className="w-4 h-4 text-indigo-600" /> Interests & Vibes
+                </label>
+                <input
+                  type="text"
+                  name="interests"
+                  placeholder="e.g., Adventure, Cafes, Historical sites, Nightlife"
+                  value={formData.interests}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                />
+              </div>
             </div>
 
             {/* Submit Button */}

@@ -4,7 +4,7 @@ import { ai } from '@/lib/gemini';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { destination, days, budget, travelers, interests } = body;
+    const { destination, days, budget, travelers, interests, language } = body;
 
     if (!destination || !days) {
       return NextResponse.json(
@@ -13,20 +13,29 @@ export async function POST(request) {
       );
     }
 
+    const langInstruction = 
+      language === 'Hindi' 
+        ? 'Generate all descriptive text, summaries, and activity suggestions in pure Hindi (Devanagari script).' 
+        : language === 'Hinglish'
+        ? 'Generate all descriptive text, summaries, and activity suggestions in casual conversational Hinglish (Hindi written in Roman English script, e.g., "Subah 9 baje Manali Mall Road ghumne niklein...").'
+        : 'Generate all content in clear English.';
+
     const prompt = `
+You are an expert AI Travel Guide.
 Generate a structured, highly detailed, realistic trip itinerary based on the following preferences:
 - Destination: ${destination}
 - Duration: ${days} days
 - Budget Level: ${budget || 'Moderate'}
 - Number of Travelers: ${travelers || 'Solo / 1 Person'}
 - Interests & Preferences: ${interests || 'General sightseeing, local food, culture'}
+- Language Requirement: ${langInstruction}
 
 Return the response strictly as valid JSON with this exact structure:
 {
   "destination": "${destination}",
   "duration": "${days} Days",
   "summary": "Short engaging summary of the trip",
-  "estimatedCost": "Total approximate budget string (e.g. ₹15,000 - ₹20,000 or $500 - $700)",
+  "estimatedCost": "Total approximate budget string (e.g. ₹15,000 - ₹20,000)",
   "budgetBreakdown": {
     "stay": { "percentage": 35, "estimatedAmount": "Estimated cost for hotels/stays" },
     "food": { "percentage": 25, "estimatedAmount": "Estimated cost for dining/street food" },
