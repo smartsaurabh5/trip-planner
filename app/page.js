@@ -22,7 +22,8 @@ import {
   Utensils,
   Car,
   Ticket,
-  PieChart
+  PieChart,
+  ExternalLink
 } from 'lucide-react';
 
 export default function Home() {
@@ -83,10 +84,15 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const getMapsUrl = (query, destination) => {
+    const searchQuery = encodeURIComponent(`${query} in ${destination}`);
+    return `https://www.google.com/maps/search/?api=1&query=${searchQuery}`;
+  };
+
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 md:px-8 print:bg-white print:p-0">
       <div className="max-w-4xl mx-auto">
-        {/* Header - Hidden on Print */}
+        {/* Header */}
         <header className="text-center mb-10 print:hidden">
           <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-700 text-sm font-medium mb-3">
             <Sparkles className="w-4 h-4" /> AI Travel Assistant
@@ -99,7 +105,7 @@ export default function Home() {
           </p>
         </header>
 
-        {/* Form Card - Hidden on Print */}
+        {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-10 print:hidden">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -218,7 +224,7 @@ export default function Home() {
         {/* Generated Itinerary Section */}
         {tripPlan && (
           <div className="space-y-8 animate-in fade-in duration-500">
-            {/* Actions Bar (Print & Copy) */}
+            {/* Actions Bar */}
             <div className="flex items-center justify-end gap-3 print:hidden">
               <button
                 onClick={handleCopy}
@@ -266,7 +272,6 @@ export default function Home() {
                   <PieChart className="w-5 h-5 text-indigo-600" /> Estimated Expense Breakdown
                 </h3>
                 
-                {/* Visual Multi-color Progress Bar */}
                 <div className="w-full h-3 bg-slate-100 rounded-full flex overflow-hidden mb-6">
                   <div style={{ width: `${tripPlan.budgetBreakdown.stay?.percentage || 35}%` }} className="bg-blue-500" title="Stay" />
                   <div style={{ width: `${tripPlan.budgetBreakdown.food?.percentage || 25}%` }} className="bg-amber-500" title="Food" />
@@ -274,9 +279,7 @@ export default function Home() {
                   <div style={{ width: `${tripPlan.budgetBreakdown.activities?.percentage || 20}%` }} className="bg-purple-500" title="Activities" />
                 </div>
 
-                {/* 4 Category Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {/* Stay */}
                   <div className="bg-blue-50/60 border border-blue-100 p-3.5 rounded-xl">
                     <div className="flex items-center gap-2 text-blue-700 font-semibold text-xs mb-1">
                       <Hotel className="w-3.5 h-3.5" /> Stay ({tripPlan.budgetBreakdown.stay?.percentage || 35}%)
@@ -284,7 +287,6 @@ export default function Home() {
                     <p className="text-sm font-bold text-blue-950">{tripPlan.budgetBreakdown.stay?.estimatedAmount || 'N/A'}</p>
                   </div>
 
-                  {/* Food */}
                   <div className="bg-amber-50/60 border border-amber-100 p-3.5 rounded-xl">
                     <div className="flex items-center gap-2 text-amber-700 font-semibold text-xs mb-1">
                       <Utensils className="w-3.5 h-3.5" /> Food ({tripPlan.budgetBreakdown.food?.percentage || 25}%)
@@ -292,7 +294,6 @@ export default function Home() {
                     <p className="text-sm font-bold text-amber-950">{tripPlan.budgetBreakdown.food?.estimatedAmount || 'N/A'}</p>
                   </div>
 
-                  {/* Transport */}
                   <div className="bg-emerald-50/60 border border-emerald-100 p-3.5 rounded-xl">
                     <div className="flex items-center gap-2 text-emerald-700 font-semibold text-xs mb-1">
                       <Car className="w-3.5 h-3.5" /> Transport ({tripPlan.budgetBreakdown.transport?.percentage || 20}%)
@@ -300,7 +301,6 @@ export default function Home() {
                     <p className="text-sm font-bold text-emerald-950">{tripPlan.budgetBreakdown.transport?.estimatedAmount || 'N/A'}</p>
                   </div>
 
-                  {/* Activities */}
                   <div className="bg-purple-50/60 border border-purple-100 p-3.5 rounded-xl">
                     <div className="flex items-center gap-2 text-purple-700 font-semibold text-xs mb-1">
                       <Ticket className="w-3.5 h-3.5" /> Activities ({tripPlan.budgetBreakdown.activities?.percentage || 20}%)
@@ -311,39 +311,82 @@ export default function Home() {
               </div>
             )}
 
-            {/* Daily Breakdown */}
+            {/* Daily Breakdown with Maps Links */}
             <div className="space-y-6">
               <h3 className="text-xl font-bold text-slate-900">Daily Itinerary</h3>
               {tripPlan.dailyPlan?.map((item) => (
                 <div key={item.day} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print:border-slate-300">
-                  <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
-                    <span className="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm print:bg-slate-800">
-                      Day {item.day}
-                    </span>
-                    <h4 className="font-semibold text-lg text-slate-800">{item.theme}</h4>
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                    <div className="flex items-center gap-3">
+                      <span className="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm print:bg-slate-800">
+                        Day {item.day}
+                      </span>
+                      <h4 className="font-semibold text-lg text-slate-800">{item.theme}</h4>
+                    </div>
+                    <a
+                      href={getMapsUrl(item.theme, tripPlan.destination)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition print:hidden"
+                    >
+                      <MapPin className="w-3.5 h-3.5" /> Explore in Maps <ExternalLink className="w-3 h-3" />
+                    </a>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Morning */}
                     <div className="space-y-1.5">
-                      <div className="flex items-center gap-2 text-amber-600 font-semibold text-sm">
-                        <Sun className="w-4 h-4" /> Morning
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-amber-600 font-semibold text-sm">
+                          <Sun className="w-4 h-4" /> Morning
+                        </div>
+                        <a
+                          href={getMapsUrl(item.morning, tripPlan.destination)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 print:hidden"
+                          title="View on Map"
+                        >
+                          Map <ExternalLink className="w-2.5 h-2.5" />
+                        </a>
                       </div>
                       <p className="text-slate-600 text-sm leading-relaxed">{item.morning}</p>
                     </div>
 
                     {/* Afternoon */}
                     <div className="space-y-1.5">
-                      <div className="flex items-center gap-2 text-orange-600 font-semibold text-sm">
-                        <Clock className="w-4 h-4" /> Afternoon
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-orange-600 font-semibold text-sm">
+                          <Clock className="w-4 h-4" /> Afternoon
+                        </div>
+                        <a
+                          href={getMapsUrl(item.afternoon, tripPlan.destination)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 print:hidden"
+                          title="View on Map"
+                        >
+                          Map <ExternalLink className="w-2.5 h-2.5" />
+                        </a>
                       </div>
                       <p className="text-slate-600 text-sm leading-relaxed">{item.afternoon}</p>
                     </div>
 
                     {/* Evening */}
                     <div className="space-y-1.5">
-                      <div className="flex items-center gap-2 text-indigo-600 font-semibold text-sm">
-                        <Sunset className="w-4 h-4" /> Evening
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-indigo-600 font-semibold text-sm">
+                          <Sunset className="w-4 h-4" /> Evening
+                        </div>
+                        <a
+                          href={getMapsUrl(item.evening, tripPlan.destination)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] text-slate-400 hover:text-indigo-600 flex items-center gap-1 print:hidden"
+                          title="View on Map"
+                        >
+                          Map <ExternalLink className="w-2.5 h-2.5" />
+                        </a>
                       </div>
                       <p className="text-slate-600 text-sm leading-relaxed">{item.evening}</p>
                     </div>
@@ -361,7 +404,6 @@ export default function Home() {
 
             {/* Extras: Packing & Tips */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Packing Essentials */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print:border-slate-300">
                 <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                   <Luggage className="w-5 h-5 text-indigo-600" /> Packing Essentials
@@ -376,7 +418,6 @@ export default function Home() {
                 </ul>
               </div>
 
-              {/* Travel Tips */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print:border-slate-300">
                 <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                   <Info className="w-5 h-5 text-indigo-600" /> Important Travel Tips
