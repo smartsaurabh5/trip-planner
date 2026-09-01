@@ -17,7 +17,12 @@ import {
   Loader2,
   Printer,
   Copy,
-  Check
+  Check,
+  Hotel,
+  Utensils,
+  Car,
+  Ticket,
+  PieChart
 } from 'lucide-react';
 
 export default function Home() {
@@ -253,6 +258,58 @@ export default function Home() {
               </div>
               <p className="mt-4 text-slate-600 leading-relaxed">{tripPlan.summary}</p>
             </div>
+
+            {/* Budget Breakdown Visualizer */}
+            {tripPlan.budgetBreakdown && (
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                  <PieChart className="w-5 h-5 text-indigo-600" /> Estimated Expense Breakdown
+                </h3>
+                
+                {/* Visual Multi-color Progress Bar */}
+                <div className="w-full h-3 bg-slate-100 rounded-full flex overflow-hidden mb-6">
+                  <div style={{ width: `${tripPlan.budgetBreakdown.stay?.percentage || 35}%` }} className="bg-blue-500" title="Stay" />
+                  <div style={{ width: `${tripPlan.budgetBreakdown.food?.percentage || 25}%` }} className="bg-amber-500" title="Food" />
+                  <div style={{ width: `${tripPlan.budgetBreakdown.transport?.percentage || 20}%` }} className="bg-emerald-500" title="Transport" />
+                  <div style={{ width: `${tripPlan.budgetBreakdown.activities?.percentage || 20}%` }} className="bg-purple-500" title="Activities" />
+                </div>
+
+                {/* 4 Category Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* Stay */}
+                  <div className="bg-blue-50/60 border border-blue-100 p-3.5 rounded-xl">
+                    <div className="flex items-center gap-2 text-blue-700 font-semibold text-xs mb-1">
+                      <Hotel className="w-3.5 h-3.5" /> Stay ({tripPlan.budgetBreakdown.stay?.percentage || 35}%)
+                    </div>
+                    <p className="text-sm font-bold text-blue-950">{tripPlan.budgetBreakdown.stay?.estimatedAmount || 'N/A'}</p>
+                  </div>
+
+                  {/* Food */}
+                  <div className="bg-amber-50/60 border border-amber-100 p-3.5 rounded-xl">
+                    <div className="flex items-center gap-2 text-amber-700 font-semibold text-xs mb-1">
+                      <Utensils className="w-3.5 h-3.5" /> Food ({tripPlan.budgetBreakdown.food?.percentage || 25}%)
+                    </div>
+                    <p className="text-sm font-bold text-amber-950">{tripPlan.budgetBreakdown.food?.estimatedAmount || 'N/A'}</p>
+                  </div>
+
+                  {/* Transport */}
+                  <div className="bg-emerald-50/60 border border-emerald-100 p-3.5 rounded-xl">
+                    <div className="flex items-center gap-2 text-emerald-700 font-semibold text-xs mb-1">
+                      <Car className="w-3.5 h-3.5" /> Transport ({tripPlan.budgetBreakdown.transport?.percentage || 20}%)
+                    </div>
+                    <p className="text-sm font-bold text-emerald-950">{tripPlan.budgetBreakdown.transport?.estimatedAmount || 'N/A'}</p>
+                  </div>
+
+                  {/* Activities */}
+                  <div className="bg-purple-50/60 border border-purple-100 p-3.5 rounded-xl">
+                    <div className="flex items-center gap-2 text-purple-700 font-semibold text-xs mb-1">
+                      <Ticket className="w-3.5 h-3.5" /> Activities ({tripPlan.budgetBreakdown.activities?.percentage || 20}%)
+                    </div>
+                    <p className="text-sm font-bold text-purple-950">{tripPlan.budgetBreakdown.activities?.estimatedAmount || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Daily Breakdown */}
             <div className="space-y-6">

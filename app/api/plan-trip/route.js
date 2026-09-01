@@ -26,7 +26,13 @@ Return the response strictly as valid JSON with this exact structure:
   "destination": "${destination}",
   "duration": "${days} Days",
   "summary": "Short engaging summary of the trip",
-  "estimatedCost": "Approximate budget estimation",
+  "estimatedCost": "Total approximate budget string (e.g. ₹15,000 - ₹20,000 or $500 - $700)",
+  "budgetBreakdown": {
+    "stay": { "percentage": 35, "estimatedAmount": "Estimated cost for hotels/stays" },
+    "food": { "percentage": 25, "estimatedAmount": "Estimated cost for dining/street food" },
+    "transport": { "percentage": 20, "estimatedAmount": "Estimated cost for local travel/cabs" },
+    "activities": { "percentage": 20, "estimatedAmount": "Estimated cost for entry tickets/experiences" }
+  },
   "dailyPlan": [
     {
       "day": 1,
