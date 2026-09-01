@@ -14,7 +14,10 @@ import {
   Compass, 
   Luggage, 
   Info,
-  Loader2 
+  Loader2,
+  Printer,
+  Copy,
+  Check
 } from 'lucide-react';
 
 export default function Home() {
@@ -29,6 +32,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [tripPlan, setTripPlan] = useState(null);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,11 +64,25 @@ export default function Home() {
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleCopy = () => {
+    if (!tripPlan) return;
+    const text = `Trip to ${tripPlan.destination} (${tripPlan.duration})\n\nSummary: ${tripPlan.summary}\nEstimated Budget: ${tripPlan.estimatedCost}\n\nDaily Plan:\n` +
+      tripPlan.dailyPlan.map(d => `Day ${d.day} - ${d.theme}\n- Morning: ${d.morning}\n- Afternoon: ${d.afternoon}\n- Evening: ${d.evening}\n- Tip: ${d.tips || 'N/A'}\n`).join('\n');
+    
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 md:px-8">
+    <main className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 md:px-8 print:bg-white print:p-0">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <header className="text-center mb-10">
+        {/* Header - Hidden on Print */}
+        <header className="text-center mb-10 print:hidden">
           <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-700 text-sm font-medium mb-3">
             <Sparkles className="w-4 h-4" /> AI Travel Assistant
           </div>
@@ -76,14 +94,14 @@ export default function Home() {
           </p>
         </header>
 
-        {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-10">
+        {/* Form Card - Hidden on Print */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-10 print:hidden">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               {/* Destination */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-indigo-600" /> Destination
                 </label>
                 <input
@@ -99,7 +117,7 @@ export default function Home() {
 
               {/* Number of Days */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-indigo-600" /> Number of Days
                 </label>
                 <input
@@ -116,7 +134,7 @@ export default function Home() {
 
               {/* Budget */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                   <DollarSign className="w-4 h-4 text-indigo-600" /> Budget Level
                 </label>
                 <select
@@ -133,7 +151,7 @@ export default function Home() {
 
               {/* Travelers */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                   <Users className="w-4 h-4 text-indigo-600" /> Travelers
                 </label>
                 <select
@@ -152,7 +170,7 @@ export default function Home() {
 
             {/* Interests */}
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+              <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                 <Compass className="w-4 h-4 text-indigo-600" /> Interests & Vibes
               </label>
               <input
@@ -195,8 +213,32 @@ export default function Home() {
         {/* Generated Itinerary Section */}
         {tripPlan && (
           <div className="space-y-8 animate-in fade-in duration-500">
+            {/* Actions Bar (Print & Copy) */}
+            <div className="flex items-center justify-end gap-3 print:hidden">
+              <button
+                onClick={handleCopy}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-medium transition cursor-pointer shadow-sm"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-600" /> Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" /> Copy Itinerary
+                  </>
+                )}
+              </button>
+              <button
+                onClick={handlePrint}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium transition cursor-pointer shadow-sm"
+              >
+                <Printer className="w-4 h-4" /> Save as PDF / Print
+              </button>
+            </div>
+
             {/* Trip Overview */}
-            <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm">
+            <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm print:border-none print:shadow-none print:p-0">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
@@ -204,7 +246,7 @@ export default function Home() {
                   </h2>
                   <p className="text-slate-500 font-medium">{tripPlan.duration} Trip</p>
                 </div>
-                <div className="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl">
+                <div className="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl print:bg-transparent print:border-none">
                   <p className="text-xs text-indigo-600 font-semibold uppercase tracking-wider">Estimated Budget</p>
                   <p className="text-lg font-bold text-indigo-900">{tripPlan.estimatedCost}</p>
                 </div>
@@ -216,9 +258,9 @@ export default function Home() {
             <div className="space-y-6">
               <h3 className="text-xl font-bold text-slate-900">Daily Itinerary</h3>
               {tripPlan.dailyPlan?.map((item) => (
-                <div key={item.day} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                <div key={item.day} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print:border-slate-300">
                   <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-5">
-                    <span className="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">
+                    <span className="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm print:bg-slate-800">
                       Day {item.day}
                     </span>
                     <h4 className="font-semibold text-lg text-slate-800">{item.theme}</h4>
@@ -263,7 +305,7 @@ export default function Home() {
             {/* Extras: Packing & Tips */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Packing Essentials */}
-              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print:border-slate-300">
                 <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                   <Luggage className="w-5 h-5 text-indigo-600" /> Packing Essentials
                 </h4>
@@ -278,7 +320,7 @@ export default function Home() {
               </div>
 
               {/* Travel Tips */}
-              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print:border-slate-300">
                 <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                   <Info className="w-5 h-5 text-indigo-600" /> Important Travel Tips
                 </h4>
