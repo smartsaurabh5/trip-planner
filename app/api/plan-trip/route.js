@@ -4,7 +4,17 @@ import { ai } from '@/lib/gemini';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { destination, days, budget, travelers, interests, language, currency } = body;
+    const { 
+      destination, 
+      days, 
+      budget, 
+      exactBudgetAmount, 
+      travelers, 
+      exactTravelersCount, 
+      interests, 
+      language, 
+      currency 
+    } = body;
 
     if (!destination || !days) {
       return NextResponse.json(
@@ -22,13 +32,21 @@ export async function POST(request) {
         ? 'Generate all descriptive text, summaries, and activity suggestions in casual conversational Hinglish (Hindi written in Roman English script).'
         : 'Generate all content in clear English.';
 
+    const budgetDescription = exactBudgetAmount 
+      ? `Exact Custom Target Budget: ${exactBudgetAmount} (${budget || 'Moderate'} style)` 
+      : `${budget || 'Moderate'}`;
+
+    const travelersDescription = exactTravelersCount 
+      ? `Exact Number of Travelers: ${exactTravelersCount} people (${travelers || 'Group'})` 
+      : `${travelers || 'Solo / 1 Person'}`;
+
     const prompt = `
 You are an expert AI Travel Guide and Geographer.
 Generate a structured, highly detailed trip itinerary with accurate map coordinates for:
 - Destination: ${destination}
 - Duration: ${days} days
-- Budget Level: ${budget || 'Moderate'}
-- Number of Travelers: ${travelers || 'Solo / 1 Person'}
+- Budget Level / Target Money: ${budgetDescription}
+- Travelers & Group Size: ${travelersDescription}
 - Interests & Preferences: ${interests || 'General sightseeing, local food, culture'}
 - Language Requirement: ${langInstruction}
 - Preferred Currency: ${selectedCurrency}
@@ -39,7 +57,7 @@ Return strictly valid JSON with this exact schema:
   "destination": "${destination}",
   "duration": "${days} Days",
   "currency": "${selectedCurrency}",
-  "summary": "Short engaging summary of the trip",
+  "summary": "Short engaging summary of the trip tailored for ${days} days, ${travelersDescription}, and budget of ${budgetDescription}",
   "estimatedCost": "Total approximate budget formatted in ${selectedCurrency}",
   "mapCoordinates": {
     "center": {
