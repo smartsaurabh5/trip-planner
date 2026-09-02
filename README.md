@@ -62,7 +62,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 > Get your free Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).  
-> Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+> Open [https://ghumakkad-saathi.onrender.com](http://localhost:3000) in your browser to view the application.
 
 ---
 
