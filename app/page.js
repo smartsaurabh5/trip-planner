@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { 
   MapPin, 
@@ -49,7 +50,14 @@ export default function Home() {
     language: 'English',
     currency: 'INR (₹)'
   });
-
+  const RouteMap = dynamic(() => import('@/components/RouteMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[380px] bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 text-sm">
+      Loading interactive map...
+    </div>
+   ),
+   });
   const [loading, setLoading] = useState(false);
   const [regeneratingDay, setRegeneratingDay] = useState(null);
   const [tripPlan, setTripPlan] = useState(null);
@@ -483,6 +491,23 @@ export default function Home() {
                 </div>
               </div>
             )}
+              {/* Interactive Route Map */}
+            {tripPlan.mapCoordinates && (
+             <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print:hidden">
+             <div className="flex items-center justify-between mb-4">
+             <div>
+             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+             <MapPin className="w-5 h-5 text-indigo-600" /> Interactive Route Map
+             </h3>
+             <p className="text-xs text-slate-500 mt-0.5">Explore key destination landmarks and day-by-day stops.</p>
+            </div>
+             <span className="text-xs font-semibold bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg">
+            {tripPlan.mapCoordinates.spots?.length || 0} Key Locations
+            </span>
+            </div>
+            <RouteMap mapData={tripPlan.mapCoordinates} destination={tripPlan.destination} />
+            </div>
+              )}        
 
             {/* Budget Breakdown Visualizer */}
             {tripPlan.budgetBreakdown && (

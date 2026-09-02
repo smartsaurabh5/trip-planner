@@ -23,17 +23,17 @@ export async function POST(request) {
         : 'Generate all content in clear English.';
 
     const prompt = `
-You are an expert AI Travel Guide and Local Safety Advisor.
-Generate a structured, highly detailed, realistic trip itinerary with safety precautions based on:
+You are an expert AI Travel Guide and Geographer.
+Generate a structured, highly detailed trip itinerary with accurate map coordinates for:
 - Destination: ${destination}
 - Duration: ${days} days
 - Budget Level: ${budget || 'Moderate'}
 - Number of Travelers: ${travelers || 'Solo / 1 Person'}
 - Interests & Preferences: ${interests || 'General sightseeing, local food, culture'}
 - Language Requirement: ${langInstruction}
-- Preferred Currency: ${selectedCurrency} (Format ALL costs, budgets, and breakdown estimations strictly using this currency symbol and format)
+- Preferred Currency: ${selectedCurrency}
 
-Include weather expectations, practical budget breakdowns, and explicit local safety advice.
+Provide accurate latitude and longitude for the destination center and major day stops for map rendering.
 Return strictly valid JSON with this exact schema:
 {
   "destination": "${destination}",
@@ -41,21 +41,36 @@ Return strictly valid JSON with this exact schema:
   "currency": "${selectedCurrency}",
   "summary": "Short engaging summary of the trip",
   "estimatedCost": "Total approximate budget formatted in ${selectedCurrency}",
+  "mapCoordinates": {
+    "center": {
+      "lat": 28.6139,
+      "lng": 77.2090
+    },
+    "spots": [
+      {
+        "name": "Stop or Landmark Name",
+        "day": 1,
+        "lat": 28.6129,
+        "lng": 77.2295,
+        "description": "Brief note on why visiting"
+      }
+    ]
+  },
   "weather": {
-    "temperature": "Expected temperature range (e.g. 18°C - 26°C)",
-    "condition": "Condition summary (e.g. Sunny with light breeze)",
+    "temperature": "Expected temperature range",
+    "condition": "Condition summary",
     "clothingTip": "Specific clothing advice based on climate"
   },
   "safetyAdvisory": {
     "commonScams": ["Scam 1 warning", "Scam 2 warning"],
     "safeTravelTips": ["Tip 1", "Tip 2"],
-    "emergencyContact": "Local emergency dial number(s)"
+    "emergencyContact": "Local emergency dial number"
   },
   "budgetBreakdown": {
-    "stay": { "percentage": 35, "estimatedAmount": "Estimated cost in ${selectedCurrency}" },
-    "food": { "percentage": 25, "estimatedAmount": "Estimated cost in ${selectedCurrency}" },
-    "transport": { "percentage": 20, "estimatedAmount": "Estimated cost in ${selectedCurrency}" },
-    "activities": { "percentage": 20, "estimatedAmount": "Estimated cost in ${selectedCurrency}" }
+    "stay": { "percentage": 35, "estimatedAmount": "Cost in ${selectedCurrency}" },
+    "food": { "percentage": 25, "estimatedAmount": "Cost in ${selectedCurrency}" },
+    "transport": { "percentage": 20, "estimatedAmount": "Cost in ${selectedCurrency}" },
+    "activities": { "percentage": 20, "estimatedAmount": "Cost in ${selectedCurrency}" }
   },
   "dailyPlan": [
     {
@@ -67,7 +82,7 @@ Return strictly valid JSON with this exact schema:
       "tips": "Practical tips or transport suggestions for this day"
     }
   ],
-  "packingEssentials": ["Item 1", "Item 2", "Item 3", "Weather-specific item"],
+  "packingEssentials": ["Item 1", "Item 2", "Item 3"],
   "importantTips": ["Tip 1", "Tip 2", "Tip 3"]
 }
 `;
