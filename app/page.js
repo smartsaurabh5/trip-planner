@@ -28,7 +28,10 @@ import {
   RefreshCw,
   CloudSun,
   Shirt,
-  Thermometer
+  Thermometer,
+  ShieldAlert,
+  AlertTriangle,
+  PhoneCall
 } from 'lucide-react';
 
 export default function Home() {
@@ -343,6 +346,54 @@ export default function Home() {
                       <Shirt className="w-3.5 h-3.5 text-sky-600" /> What to Wear
                     </p>
                     <p className="text-sm font-semibold text-slate-800">{tripPlan.weather.clothingTip || 'Casual wear'}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Local Safety & Scam Advisory Card */}
+            {tripPlan.safetyAdvisory && (
+              <div className="bg-amber-50/60 rounded-2xl p-6 border border-amber-200/70 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-amber-200/50 pb-3">
+                  <h3 className="text-base font-bold text-amber-950 flex items-center gap-2">
+                    <ShieldAlert className="w-5 h-5 text-amber-600" /> Local Safety & Scam Advisory
+                  </h3>
+                  {tripPlan.safetyAdvisory.emergencyContact && (
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full border border-amber-200">
+                      <PhoneCall className="w-3.5 h-3.5 text-amber-700" /> Emergency: {tripPlan.safetyAdvisory.emergencyContact}
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Common Scams */}
+                  <div className="bg-white/80 backdrop-blur-xs p-4 rounded-xl border border-amber-200/60">
+                    <p className="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5 mb-2.5">
+                      <AlertTriangle className="w-4 h-4 text-amber-600" /> Common Tourist Traps & Scams
+                    </p>
+                    <ul className="space-y-2">
+                      {tripPlan.safetyAdvisory.commonScams?.map((scam, idx) => (
+                        <li key={idx} className="text-xs text-slate-700 flex items-start gap-2 leading-relaxed">
+                          <span className="text-amber-500 font-bold">•</span>
+                          <span>{scam}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Safe Travel Tips */}
+                  <div className="bg-white/80 backdrop-blur-xs p-4 rounded-xl border border-amber-200/60">
+                    <p className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1.5 mb-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Safety Recommendations
+                    </p>
+                    <ul className="space-y-2">
+                      {tripPlan.safetyAdvisory.safeTravelTips?.map((tip, idx) => (
+                        <li key={idx} className="text-xs text-slate-700 flex items-start gap-2 leading-relaxed">
+                          <span className="text-emerald-500 font-bold">•</span>
+                          <span>{tip}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               </div>

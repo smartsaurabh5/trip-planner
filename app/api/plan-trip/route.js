@@ -21,8 +21,8 @@ export async function POST(request) {
         : 'Generate all content in clear English.';
 
     const prompt = `
-You are an expert AI Travel Guide.
-Generate a structured, highly detailed, realistic trip itinerary with weather-aware recommendations based on:
+You are an expert AI Travel Guide and Local Safety Advisor.
+Generate a structured, highly detailed, realistic trip itinerary with safety precautions based on:
 - Destination: ${destination}
 - Duration: ${days} days
 - Budget Level: ${budget || 'Moderate'}
@@ -30,7 +30,7 @@ Generate a structured, highly detailed, realistic trip itinerary with weather-aw
 - Interests & Preferences: ${interests || 'General sightseeing, local food, culture'}
 - Language Requirement: ${langInstruction}
 
-Analyze destination typical climate and provide weather expectations and synced packing tips.
+Include weather expectations, practical budget breakdowns, and explicit local safety advice (common scams, safe areas, emergency numbers).
 Return strictly valid JSON with this exact schema:
 {
   "destination": "${destination}",
@@ -41,6 +41,11 @@ Return strictly valid JSON with this exact schema:
     "temperature": "Expected temperature range (e.g. 18°C - 26°C)",
     "condition": "Condition summary (e.g. Sunny with light evening breeze)",
     "clothingTip": "Specific clothing advice based on climate"
+  },
+  "safetyAdvisory": {
+    "commonScams": ["Scam 1 warning", "Scam 2 warning"],
+    "safeTravelTips": ["Tip 1", "Tip 2"],
+    "emergencyContact": "Local emergency dial number(s)"
   },
   "budgetBreakdown": {
     "stay": { "percentage": 35, "estimatedAmount": "Estimated cost for hotels/stays" },
