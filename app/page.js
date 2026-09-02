@@ -53,7 +53,7 @@ import {
 const RouteMap = dynamic(() => import('@/components/RouteMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[380px] bg-slate-900 rounded-2xl flex items-center justify-center text-slate-400 text-sm border border-slate-800">
+    <div className="w-full h-[280px] xs:h-[340px] sm:h-[380px] md:h-[420px] bg-slate-900 rounded-2xl flex items-center justify-center text-slate-400 text-sm border border-slate-800">
       Loading interactive route map...
     </div>
   ),
@@ -308,20 +308,20 @@ export default function Home() {
       />
 
       {/* FLOATING AUDIO PLAYER - LEFT DOWNSIDE CORNER */}
-      <div className="fixed bottom-4 left-4 z-40 print:hidden">
-        <div className="glass-panel px-3 py-2 rounded-2xl flex items-center gap-2.5 border border-slate-700/60 shadow-2xl hover:border-amber-500/40 transition">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-rose-600 flex items-center justify-center shrink-0 shadow-md">
+      <div className="fixed bottom-3 left-3 sm:bottom-4 sm:left-4 z-40 print:hidden max-w-[calc(100vw-1.5rem)]">
+        <div className="glass-panel px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-2xl flex items-center gap-2 border border-slate-700/60 shadow-2xl hover:border-amber-500/40 transition">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-amber-500 to-rose-600 flex items-center justify-center shrink-0 shadow-md">
             <Sparkles className="w-3.5 h-3.5 text-slate-950" />
           </div>
           
-          <div className="hidden sm:block min-w-0 max-w-[160px]">
-            <p className="text-[11px] font-bold text-white truncate">Raah Mein Unse Mulaqat</p>
-            <p className="text-[9px] text-slate-400 truncate">Roadtrip Playlist • Ghumakkad Vibe</p>
+          <div className="hidden xs:block min-w-0 max-w-[130px] sm:max-w-[160px]">
+            <p className="text-[10px] sm:text-[11px] font-bold text-white truncate">Raah Mein Unse Mulaqat</p>
+            <p className="text-[9px] text-slate-400 truncate">Roadtrip Playlist • Ghumakkad</p>
           </div>
 
           <button
             onClick={toggleAudio}
-            className="w-7 h-7 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center font-bold transition shadow-md shrink-0 cursor-pointer"
+            className="w-7 h-7 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center font-bold transition shadow-md shrink-0 cursor-pointer active:scale-95"
             title={isPlayingAudio ? "Pause Travel Music" : "Play Travel Music"}
           >
             {isPlayingAudio ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
@@ -329,129 +329,160 @@ export default function Home() {
         </div>
       </div>
 
-      {/* FULL SCREEN WALLPAPER HERO CONTAINER */}
-      <div className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-slate-950">
+      {/* FULL SCREEN WALLPAPER HERO CONTAINER - FITS EXACTLY 100VH WITHOUT SCROLLING */}
+      <div className="relative h-screen min-h-[560px] w-full flex flex-col justify-between overflow-hidden bg-slate-950">
         
-        {/* Completely Clear Wallpaper Background (No Blur, No Dark Shroud) */}
-        <div className="absolute inset-0 z-0">
+        {/* Completely Clear Responsive Wallpaper Background */}
+        <div className="absolute inset-0 z-0 bg-slate-950 flex items-center justify-center">
+          {/* Desktop Wallpaper */}
           <img 
             src="/ghumakkad-saathi.jpg" 
-            alt="घुम्मकड़ साथी - Wallpaper" 
-            className="w-full h-full object-cover object-center filter brightness-100 contrast-100"
+            alt="घुम्मकड़ साथी - Wallpaper Desktop" 
+            className="hidden sm:block w-full h-full object-cover object-center filter brightness-100 contrast-100"
+          />
+          {/* Mobile Wallpaper - Shrunk & fitted with object-contain so zero left/right clipping occurs */}
+          <img 
+            src="/ghumakkad-saathi-mobile.jpg" 
+            alt="घुम्मकड़ साथी - Wallpaper Mobile" 
+            className="block sm:hidden w-full h-full object-contain object-center filter brightness-100 contrast-100 scale-[0.98]"
           />
         </div>
 
         {/* TOP NAVIGATION BAR */}
-        <header className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 py-5 flex items-center justify-between">
+        <header className="relative z-20 w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-8 py-2.5 sm:py-4 flex flex-wrap items-center justify-between gap-2 shrink-0">
           
-          {/* Top Left: Live Online Users Badge */}
-          <div className="flex items-center gap-2">
-            <div className="inline-flex items-center gap-2 bg-slate-900/85 border border-slate-700/60 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-200 shadow-lg">
+          {/* Top Left: Live Online Users Badge + Mobile Saved Plans Button */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-slate-900/85 border border-slate-700/60 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-slate-200 shadow-lg">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-glow" />
               <span className="font-mono font-bold text-white">{onlineUsers}</span>
-              <span className="text-slate-400">online</span>
+              <span className="text-slate-400 hidden xs:inline">online</span>
             </div>
-          </div>
 
-          {/* Top Center: Artwork & Saved Plans Buttons */}
-          <div className="hidden sm:flex items-center gap-2">
-            <button
-              onClick={() => setActiveModal('lightbox')}
-              className="px-4 py-1.5 rounded-full bg-slate-900/85 border border-slate-700/60 text-slate-200 hover:text-white hover:border-amber-500/50 text-xs font-semibold transition shadow-md cursor-pointer flex items-center gap-1.5"
-            >
-              <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>Full Artwork</span>
-            </button>
+            {/* Saved Plans accessible on mobile screens */}
             <button
               onClick={() => setActiveModal('drawer')}
-              className="px-4 py-1.5 rounded-full bg-indigo-950/85 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs font-semibold transition shadow-md cursor-pointer flex items-center gap-1.5"
+              className="px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-indigo-950/85 border border-indigo-500/40 text-indigo-200 hover:text-white text-[11px] sm:text-xs font-semibold transition shadow-md cursor-pointer flex items-center gap-1 active:scale-95"
+              title="Saved Plans History"
             >
               <History className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Saved Plans ({savedTrips.length})</span>
+              <span>Saved ({savedTrips.length})</span>
             </button>
           </div>
 
-          {/* Top Right: Active Pill Buttons (About, FAQ, Support us) */}
-          <div className="flex items-center gap-2">
+          {/* Top Center/Right: Artwork & Pill Buttons (About, FAQ, Support us) */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button
+              onClick={() => setActiveModal('lightbox')}
+              className="hidden md:flex px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-slate-900/85 border border-slate-700/60 text-slate-200 hover:text-white hover:border-amber-500/50 text-[11px] sm:text-xs font-semibold transition shadow-md cursor-pointer items-center gap-1.5"
+            >
+              <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
+              <span>Artwork</span>
+            </button>
+
             <button
               onClick={() => setActiveModal('about')}
-              className="px-4 py-1.5 rounded-full bg-slate-900/85 border border-slate-700/60 text-slate-200 hover:bg-slate-800 hover:text-white text-xs font-semibold transition shadow-md cursor-pointer"
+              className="px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-slate-900/85 border border-slate-700/60 text-slate-200 hover:bg-slate-800 hover:text-white text-[11px] sm:text-xs font-semibold transition shadow-md cursor-pointer active:scale-95"
             >
               About
             </button>
 
             <button
               onClick={() => setActiveModal('faq')}
-              className="px-4 py-1.5 rounded-full bg-slate-900/85 border border-slate-700/60 text-slate-200 hover:bg-slate-800 hover:text-white text-xs font-semibold transition shadow-md cursor-pointer"
+              className="px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-slate-900/85 border border-slate-700/60 text-slate-200 hover:bg-slate-800 hover:text-white text-[11px] sm:text-xs font-semibold transition shadow-md cursor-pointer active:scale-95"
             >
               FAQ
             </button>
 
             <button
               onClick={() => setActiveModal('support')}
-              className="px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-rose-500 text-slate-950 font-bold hover:brightness-110 text-xs transition shadow-lg flex items-center gap-1.5 cursor-pointer"
+              className="px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-rose-500 text-slate-950 font-bold hover:brightness-110 text-[11px] sm:text-xs transition shadow-lg flex items-center gap-1 cursor-pointer active:scale-95"
             >
               <Heart className="w-3.5 h-3.5 fill-slate-950" />
-              <span>Support us</span>
+              <span className="hidden xs:inline">Support</span>
+              <span className="xs:hidden">♥</span>
             </button>
           </div>
         </header>
 
-        {/* CENTER HERO SEARCH SECTION */}
-        <main className="relative z-10 w-full max-w-3xl mx-auto px-4 pt-52 sm:pt-64 md:pt-72 pb-16 flex flex-col items-center justify-center text-center">
+        {/* CENTER HERO SEARCH SECTION - LOWER THIRD ALIGNED TO LEAVE ARTWORK TEXT 100% UNCOVERED */}
+        <main className="relative z-10 w-full max-w-3xl mx-auto px-3 sm:px-4 flex-1 flex flex-col justify-end items-center text-center pb-2.5 sm:pb-4 pt-0">
           
           {/* MAIN SEARCH & TRIP FORM DECK */}
-          <div className="w-full glass-panel amber-glow rounded-3xl p-4 sm:p-6 shadow-2xl border border-slate-700/60">
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="w-full glass-panel amber-glow rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-2xl border border-slate-700/60">
+            <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3">
               
               {/* Primary Search Input Row */}
-              <div className="relative flex items-center">
-                <MapPin className="absolute left-4 w-5 h-5 text-amber-400 z-10" />
-                <input
-                  type="text"
-                  name="destination"
-                  required
-                  placeholder="Enter destination (e.g. Manali, Varanasi, Jaipur, Goa)"
-                  value={formData.destination}
-                  onChange={handleChange}
-                  className="w-full pl-12 pr-32 py-4 rounded-2xl glass-input text-sm sm:text-base text-white placeholder-slate-400 font-medium"
-                />
+              <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <div className="relative flex-1 flex items-center">
+                  <MapPin className="absolute left-3.5 sm:left-4 w-4 sm:w-5 h-4 sm:h-5 text-amber-400 z-10 pointer-events-none" />
+                  <input
+                    type="text"
+                    name="destination"
+                    required
+                    placeholder="Destination (e.g. Manali, Varanasi, Goa)"
+                    value={formData.destination}
+                    onChange={handleChange}
+                    className="w-full pl-10 sm:pl-12 pr-4 sm:pr-36 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl glass-input text-sm sm:text-base text-white placeholder-slate-400 font-medium"
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="hidden sm:flex absolute right-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 hover:brightness-110 text-slate-950 font-extrabold text-xs sm:text-sm transition shadow-lg disabled:opacity-70 items-center gap-2 cursor-pointer"
+                  >
+                    {loading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4" />
+                        <span>Search</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Mobile Full Width Search Button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="absolute right-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 hover:brightness-110 text-slate-950 font-extrabold text-sm transition shadow-lg disabled:opacity-70 flex items-center gap-2 cursor-pointer"
+                  className="sm:hidden w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 hover:brightness-110 text-slate-950 font-extrabold text-sm transition shadow-lg disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
                 >
                   {loading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Generating Itinerary...</span>
+                    </>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4" />
-                      <span>Search</span>
+                      <span>Generate AI Trip Plan</span>
                     </>
                   )}
                 </button>
               </div>
 
-              {/* Quick Settings Bar - Days, Budget & People ALL IN THE SAME LINE */}
-              <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 pt-1 px-1">
-                <div className="flex items-center gap-2 sm:gap-2.5 text-xs text-slate-300 overflow-x-auto py-1 max-w-full">
+              {/* Quick Settings Bar - Days, Budget & People in clean responsive 3-column layout */}
+              <div className="space-y-1.5 pt-0.5">
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 text-xs text-slate-300">
                   
-                  {/* Days Dropdown + Manual Input Option */}
-                  <div className="flex items-center gap-1 bg-slate-900/90 px-2.5 py-1.5 rounded-xl border border-slate-700/80 shrink-0">
-                    <Calendar className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                    <span className="text-[11px] text-slate-400 font-medium hidden xs:inline">Days:</span>
+                  {/* Days Dropdown */}
+                  <div className="flex flex-col items-center justify-center bg-slate-900/90 px-1.5 py-1 sm:px-2.5 sm:py-1.5 rounded-xl border border-slate-700/80">
+                    <div className="flex items-center gap-1 mb-0.5 sm:mb-0">
+                      <Calendar className="w-3 h-3 text-amber-400 shrink-0" />
+                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Days</span>
+                    </div>
                     <select
                       name="daysOption"
                       value={formData.daysOption}
                       onChange={handleChange}
-                      className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer"
+                      className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer text-center w-full"
                     >
                       <option value="1" className="bg-slate-900">1 Day</option>
                       <option value="2" className="bg-slate-900">2 Days</option>
                       <option value="3" className="bg-slate-900">3 Days</option>
                       <option value="5" className="bg-slate-900">5 Days</option>
                       <option value="7" className="bg-slate-900">7 Days</option>
-                      <option value="custom" className="bg-slate-900 text-amber-400">✏️ Custom...</option>
+                      <option value="custom" className="bg-slate-900 text-amber-400">Custom...</option>
                     </select>
 
                     {formData.daysOption === 'custom' && (
@@ -463,26 +494,28 @@ export default function Home() {
                         placeholder="Days"
                         value={formData.customDays}
                         onChange={handleChange}
-                        className="w-14 bg-slate-950 border border-amber-500/50 text-amber-300 font-bold text-xs px-1.5 py-0.5 rounded-md focus:outline-none text-center"
+                        className="mt-1 w-full bg-slate-950 border border-amber-500/50 text-amber-300 font-bold text-xs px-1 py-0.5 rounded-md focus:outline-none text-center"
                         required
                       />
                     )}
                   </div>
 
-                  {/* Budget Dropdown + Manual Input Option */}
-                  <div className="flex items-center gap-1 bg-slate-900/90 px-2.5 py-1.5 rounded-xl border border-slate-700/80 shrink-0">
-                    <DollarSign className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span className="text-[11px] text-slate-400 font-medium hidden xs:inline">Budget:</span>
+                  {/* Budget Dropdown */}
+                  <div className="flex flex-col items-center justify-center bg-slate-900/90 px-1.5 py-1 sm:px-2.5 sm:py-1.5 rounded-xl border border-slate-700/80">
+                    <div className="flex items-center gap-1 mb-0.5 sm:mb-0">
+                      <DollarSign className="w-3 h-3 text-emerald-400 shrink-0" />
+                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Budget</span>
+                    </div>
                     <select
                       name="budgetOption"
                       value={formData.budgetOption}
                       onChange={handleChange}
-                      className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer"
+                      className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer text-center w-full"
                     >
                       <option value="Budget / Backpacker" className="bg-slate-900">Budget</option>
                       <option value="Moderate" className="bg-slate-900">Moderate</option>
                       <option value="Luxury" className="bg-slate-900">Luxury</option>
-                      <option value="custom" className="bg-slate-900 text-emerald-400">✏️ Custom...</option>
+                      <option value="custom" className="bg-slate-900 text-emerald-400">Custom...</option>
                     </select>
 
                     {formData.budgetOption === 'custom' && (
@@ -492,27 +525,29 @@ export default function Home() {
                         placeholder="₹15k"
                         value={formData.customBudget}
                         onChange={handleChange}
-                        className="w-20 bg-slate-950 border border-emerald-500/50 text-emerald-300 font-bold text-xs px-1.5 py-0.5 rounded-md focus:outline-none text-center"
+                        className="mt-1 w-full bg-slate-950 border border-emerald-500/50 text-emerald-300 font-bold text-xs px-1 py-0.5 rounded-md focus:outline-none text-center"
                         required
                       />
                     )}
                   </div>
 
-                  {/* People Dropdown + Manual Input Option (STRICTLY SAME LINE) */}
-                  <div className="flex items-center gap-1 bg-slate-900/90 px-2.5 py-1.5 rounded-xl border border-slate-700/80 shrink-0">
-                    <Users className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                    <span className="text-[11px] text-slate-400 font-medium hidden xs:inline">People:</span>
+                  {/* People Dropdown */}
+                  <div className="flex flex-col items-center justify-center bg-slate-900/90 px-1.5 py-1 sm:px-2.5 sm:py-1.5 rounded-xl border border-slate-700/80">
+                    <div className="flex items-center gap-1 mb-0.5 sm:mb-0">
+                      <Users className="w-3 h-3 text-sky-400 shrink-0" />
+                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Travelers</span>
+                    </div>
                     <select
                       name="travelersOption"
                       value={formData.travelersOption}
                       onChange={handleChange}
-                      className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer"
+                      className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer text-center w-full"
                     >
                       <option value="Solo / 1 Person" className="bg-slate-900">Solo (1)</option>
                       <option value="Couple (2 People)" className="bg-slate-900">Couple (2)</option>
                       <option value="Family (3-4 People)" className="bg-slate-900">Family (3-4)</option>
                       <option value="Friends Group (5+ People)" className="bg-slate-900">Friends (5+)</option>
-                      <option value="custom" className="bg-slate-900 text-sky-400">✏️ Custom...</option>
+                      <option value="custom" className="bg-slate-900 text-sky-400">Custom...</option>
                     </select>
 
                     {formData.travelersOption === 'custom' && (
@@ -524,33 +559,35 @@ export default function Home() {
                         placeholder="Count"
                         value={formData.customTravelers}
                         onChange={handleChange}
-                        className="w-12 bg-slate-950 border border-sky-500/50 text-sky-300 font-bold text-xs px-1.5 py-0.5 rounded-md focus:outline-none text-center"
+                        className="mt-1 w-full bg-slate-950 border border-sky-500/50 text-sky-300 font-bold text-xs px-1 py-0.5 rounded-md focus:outline-none text-center"
                         required
                       />
                     )}
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                  className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 font-medium cursor-pointer shrink-0 ml-auto"
-                >
-                  <Sliders className="w-3.5 h-3.5" />
-                  <span>{showAdvancedFilters ? 'Less Filters' : 'More Filters'}</span>
-                </button>
+                <div className="flex justify-end pt-0.5">
+                  <button
+                    type="button"
+                    onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                    className="text-[10px] sm:text-[11px] text-amber-400 hover:text-amber-300 flex items-center gap-1 font-medium cursor-pointer py-0.5 px-2 rounded-lg bg-amber-500/10 border border-amber-500/20 active:scale-95"
+                  >
+                    <Sliders className="w-3 h-3" />
+                    <span>{showAdvancedFilters ? 'Less Filters' : 'More Filters (Language, Currency, Vibes)'}</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Advanced Options Accordion */}
+              {/* Advanced Options Accordion - COMPACT & CLEAN */}
               {showAdvancedFilters && (
-                <div className="pt-3 border-t border-slate-700/50 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left animate-in fade-in duration-300">
+                <div className="pt-2 mt-1 border-t border-slate-700/50 grid grid-cols-1 sm:grid-cols-3 gap-2 text-left animate-in fade-in duration-200">
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Language</label>
+                    <label className="text-[10px] sm:text-[11px] font-semibold text-slate-300 mb-0.5 block">Language</label>
                     <select
                       name="language"
                       value={formData.language}
                       onChange={handleChange}
-                      className="w-full bg-slate-900 text-white rounded-xl border border-slate-700 px-3 py-2 text-xs"
+                      className="w-full bg-slate-900/95 text-white rounded-lg border border-slate-700 px-2.5 py-1.5 text-xs focus:outline-none focus:border-amber-500"
                     >
                       <option value="English">English</option>
                       <option value="Hindi">Hindi (हिंदी)</option>
@@ -559,12 +596,12 @@ export default function Home() {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Currency</label>
+                    <label className="text-[10px] sm:text-[11px] font-semibold text-slate-300 mb-0.5 block">Currency</label>
                     <select
                       name="currency"
                       value={formData.currency}
                       onChange={handleChange}
-                      className="w-full bg-slate-900 text-white rounded-xl border border-slate-700 px-3 py-2 text-xs"
+                      className="w-full bg-slate-900/95 text-white rounded-lg border border-slate-700 px-2.5 py-1.5 text-xs focus:outline-none focus:border-amber-500"
                     >
                       <option value="INR (₹)">INR (₹)</option>
                       <option value="USD ($)">USD ($)</option>
@@ -574,14 +611,14 @@ export default function Home() {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Interests & Special Activities</label>
+                    <label className="text-[10px] sm:text-[11px] font-semibold text-slate-300 mb-0.5 block">Interests</label>
                     <input
                       type="text"
                       name="interests"
                       value={formData.interests}
                       onChange={handleChange}
-                      placeholder="e.g. Photography, Cafes, Dhaba food"
-                      className="w-full bg-slate-900 text-white rounded-xl border border-slate-700 px-3 py-2 text-xs"
+                      placeholder="e.g. Photography, Dhaba"
+                      className="w-full bg-slate-900/95 text-white rounded-lg border border-slate-700 px-2.5 py-1.5 text-xs focus:outline-none focus:border-amber-500"
                     />
                   </div>
                 </div>
@@ -589,32 +626,32 @@ export default function Home() {
             </form>
 
             {error && (
-              <div className="mt-3 p-3 bg-red-950/60 border border-red-500/40 text-red-300 rounded-xl text-xs text-center">
+              <div className="mt-2 p-2.5 bg-red-950/60 border border-red-500/40 text-red-300 rounded-xl text-xs text-center">
                 {error}
               </div>
             )}
           </div>
 
-          {/* Preset Quick Vibe Pills - PLACED DIRECTLY BELOW COMPLETE SEARCH & FORM DECK */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+          {/* Preset Quick Vibe Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-3.5 px-1">
             <button
               type="button"
               onClick={() => quickSelectVibe('Rainy Roadtrip, Highway Tea Stalls, Scenic Overlooks', 'Manali')}
-              className="glass-pill px-3.5 py-1.5 rounded-full text-xs text-amber-200 font-medium transition cursor-pointer flex items-center gap-1.5 hover:scale-105"
+              className="glass-pill px-3 py-1.5 rounded-full text-[11px] sm:text-xs text-amber-200 font-medium transition cursor-pointer flex items-center gap-1.5 hover:scale-105 active:scale-95"
             >
               <span>🌧️ Baarish Roadtrip?</span>
             </button>
             <button
               type="button"
               onClick={() => quickSelectVibe('Dhaba Food, Highway Stops, Heritage Forts', 'Jaipur')}
-              className="glass-pill px-3.5 py-1.5 rounded-full text-xs text-slate-200 font-medium transition cursor-pointer flex items-center gap-1.5 hover:scale-105"
+              className="glass-pill px-3 py-1.5 rounded-full text-[11px] sm:text-xs text-slate-200 font-medium transition cursor-pointer flex items-center gap-1.5 hover:scale-105 active:scale-95"
             >
               <span>🚗 Highway Dhaba Guide</span>
             </button>
             <button
               type="button"
               onClick={() => quickSelectVibe('Ghats, Local Food, Ancient Temples', 'Varanasi')}
-              className="glass-pill px-3.5 py-1.5 rounded-full text-xs text-emerald-200 font-medium transition cursor-pointer flex items-center gap-1.5 hover:scale-105"
+              className="glass-pill px-3 py-1.5 rounded-full text-[11px] sm:text-xs text-emerald-200 font-medium transition cursor-pointer flex items-center gap-1.5 hover:scale-105 active:scale-95"
             >
               <span>📍 Heritage Route</span>
             </button>
@@ -623,7 +660,7 @@ export default function Home() {
         </main>
 
         {/* BOTTOM SCROLL INDICATOR */}
-        <footer className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-center">
+        <footer className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 py-3 sm:py-4 flex items-center justify-center">
           <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-slate-300 uppercase drop-shadow-md">
             <span>SCROLL</span>
             <ChevronDown className="w-4 h-4 animate-bounce text-amber-400" />
@@ -633,22 +670,22 @@ export default function Home() {
       </div>
 
       {/* RESULTS DISPLAY SECTION */}
-      <div ref={resultsRef} id="itinerary-results" className="w-full max-w-5xl mx-auto px-4 py-12 space-y-8">
+      <div ref={resultsRef} id="itinerary-results" className="w-full max-w-5xl mx-auto px-3 sm:px-4 py-8 sm:py-12 space-y-6 sm:space-y-8">
         
         {tripPlan ? (
-          <div className="space-y-8 animate-in fade-in duration-500">
+          <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500">
             
             {/* Action Buttons Top Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-xl">
               <div>
-                <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">Itinerary Ready</span>
-                <h2 className="text-2xl md:text-3xl font-black text-white">{tripPlan.destination}</h2>
+                <span className="text-[11px] sm:text-xs font-semibold text-amber-400 uppercase tracking-wider">Itinerary Ready</span>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">{tripPlan.destination}</h2>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
                 <button
                   onClick={handleCopy}
-                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-2 cursor-pointer"
+                  className="w-full justify-center px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-2 cursor-pointer active:scale-95"
                 >
                   {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                   <span>{copied ? 'Copied!' : 'Copy Plan'}</span>
@@ -656,7 +693,7 @@ export default function Home() {
 
                 <button
                   onClick={handlePrint}
-                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition flex items-center gap-2 cursor-pointer shadow-md"
+                  className="w-full justify-center px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition flex items-center gap-2 cursor-pointer shadow-md active:scale-95"
                 >
                   <Printer className="w-4 h-4" />
                   <span>PDF / Print</span>
@@ -665,51 +702,51 @@ export default function Home() {
             </div>
 
             {/* Overview Card */}
-            <div className="glass-panel rounded-3xl p-6 md:p-8 border border-slate-800 shadow-2xl">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+            <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-slate-800 shadow-2xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-800 pb-4 sm:pb-6">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-xl md:text-2xl font-bold text-white">Trip Summary</h3>
-                    <span className="text-[11px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-md font-semibold">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white">Trip Summary</h3>
+                    <span className="text-[10px] sm:text-[11px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-md font-semibold">
                       Auto-Saved
                     </span>
                   </div>
-                  <p className="text-slate-400 text-sm font-medium">{tripPlan.duration}</p>
+                  <p className="text-slate-400 text-xs sm:text-sm font-medium">{tripPlan.duration}</p>
                 </div>
 
-                <div className="bg-amber-500/10 border border-amber-500/30 px-4 py-2 rounded-2xl">
-                  <p className="text-xs text-amber-400 font-semibold uppercase tracking-wider">Estimated Budget</p>
-                  <p className="text-lg font-bold text-white">{tripPlan.estimatedCost}</p>
+                <div className="bg-amber-500/10 border border-amber-500/30 px-3.5 py-2 rounded-xl sm:rounded-2xl self-start sm:self-auto">
+                  <p className="text-[10px] sm:text-xs text-amber-400 font-semibold uppercase tracking-wider">Estimated Budget</p>
+                  <p className="text-base sm:text-lg font-bold text-white">{tripPlan.estimatedCost}</p>
                 </div>
               </div>
 
-              <p className="mt-4 text-slate-200 text-sm md:text-base leading-relaxed">{tripPlan.summary}</p>
+              <p className="mt-4 text-slate-200 text-xs sm:text-sm md:text-base leading-relaxed">{tripPlan.summary}</p>
             </div>
 
             {/* Weather Advisory Card */}
             {tripPlan.weather && (
-              <div className="bg-sky-950/60 border border-sky-800/60 rounded-3xl p-6 shadow-xl">
-                <h3 className="text-base font-bold text-sky-300 mb-3 flex items-center gap-2">
-                  <CloudSun className="w-5 h-5 text-sky-400" /> Weather Advisory & Clothing Guide
+              <div className="bg-sky-950/60 border border-sky-800/60 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl">
+                <h3 className="text-sm sm:text-base font-bold text-sky-300 mb-3 flex items-center gap-2">
+                  <CloudSun className="w-4 sm:w-5 h-4 sm:h-5 text-sky-400 shrink-0" /> Weather Advisory & Clothing Guide
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
-                    <p className="text-xs font-semibold text-sky-400 flex items-center gap-1.5 mb-1">
-                      <Thermometer className="w-4 h-4" /> Expected Temp
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                  <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800">
+                    <p className="text-[11px] font-semibold text-sky-400 flex items-center gap-1.5 mb-1">
+                      <Thermometer className="w-3.5 h-3.5" /> Expected Temp
                     </p>
-                    <p className="text-sm font-bold text-white">{tripPlan.weather.temperature || 'Moderate'}</p>
+                    <p className="text-xs sm:text-sm font-bold text-white">{tripPlan.weather.temperature || 'Moderate'}</p>
                   </div>
-                  <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
-                    <p className="text-xs font-semibold text-sky-400 flex items-center gap-1.5 mb-1">
-                      <CloudSun className="w-4 h-4" /> Conditions
+                  <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800">
+                    <p className="text-[11px] font-semibold text-sky-400 flex items-center gap-1.5 mb-1">
+                      <CloudSun className="w-3.5 h-3.5" /> Conditions
                     </p>
-                    <p className="text-sm font-semibold text-white">{tripPlan.weather.condition || 'Pleasant'}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-white">{tripPlan.weather.condition || 'Pleasant'}</p>
                   </div>
-                  <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
-                    <p className="text-xs font-semibold text-sky-400 flex items-center gap-1.5 mb-1">
-                      <Shirt className="w-4 h-4" /> What to Wear
+                  <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800">
+                    <p className="text-[11px] font-semibold text-sky-400 flex items-center gap-1.5 mb-1">
+                      <Shirt className="w-3.5 h-3.5" /> What to Wear
                     </p>
-                    <p className="text-sm font-semibold text-white">{tripPlan.weather.clothingTip || 'Casual wear'}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-white">{tripPlan.weather.clothingTip || 'Casual wear'}</p>
                   </div>
                 </div>
               </div>
@@ -717,22 +754,22 @@ export default function Home() {
 
             {/* Local Safety & Scam Advisory */}
             {tripPlan.safetyAdvisory && (
-              <div className="bg-amber-950/50 border border-amber-800/50 rounded-3xl p-6 shadow-xl">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-amber-500/20 pb-3">
-                  <h3 className="text-base font-bold text-amber-400 flex items-center gap-2">
-                    <ShieldAlert className="w-5 h-5 text-amber-500" /> Local Safety & Tourist Advice
+              <div className="bg-amber-950/50 border border-amber-800/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3.5 sm:mb-4 border-b border-amber-500/20 pb-3">
+                  <h3 className="text-sm sm:text-base font-bold text-amber-400 flex items-center gap-2">
+                    <ShieldAlert className="w-4 sm:w-5 h-4 sm:h-5 text-amber-500 shrink-0" /> Local Safety & Tourist Advice
                   </h3>
                   {tripPlan.safetyAdvisory.emergencyContact && (
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-300 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-500/30">
-                      <PhoneCall className="w-3.5 h-3.5 text-amber-400" /> Helpline: {tripPlan.safetyAdvisory.emergencyContact}
+                    <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-amber-300 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-500/30 self-start sm:self-auto">
+                      <PhoneCall className="w-3 h-3 text-amber-400" /> Helpline: {tripPlan.safetyAdvisory.emergencyContact}
                     </span>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
-                    <p className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5 mb-2.5">
-                      <AlertTriangle className="w-4 h-4 text-amber-500" /> Common Tourist Traps & Scams
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
+                  <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5 mb-2">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500" /> Common Tourist Traps & Scams
                     </p>
                     <ul className="space-y-2">
                       {tripPlan.safetyAdvisory.commonScams?.map((scam, idx) => (
@@ -744,9 +781,9 @@ export default function Home() {
                     </ul>
                   </div>
 
-                  <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
-                    <p className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5 mb-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Safety Recommendations
+                  <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5 mb-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Safety Recommendations
                     </p>
                     <ul className="space-y-2">
                       {tripPlan.safetyAdvisory.safeTravelTips?.map((tip, idx) => (
@@ -761,14 +798,14 @@ export default function Home() {
               </div>
             )}
 
-            {/* Interactive Route Map (Directly Open & Rendered on Itinerary Generation) */}
-            <div className="glass-panel rounded-3xl p-6 border border-slate-800 shadow-2xl">
-              <div className="flex items-center justify-between mb-4">
+            {/* Interactive Route Map */}
+            <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-800 shadow-2xl">
+              <div className="flex items-center justify-between mb-3.5 sm:mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-amber-400" /> Interactive Route Map
+                  <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                    <MapPin className="w-4 sm:w-5 h-4 sm:h-5 text-amber-400" /> Interactive Route Map
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-[11px] sm:text-xs text-slate-400">
                     Explore landmarks and suggested routes for {tripPlan.destination}
                   </p>
                 </div>
@@ -783,31 +820,31 @@ export default function Home() {
             </div>
 
             {/* Day-by-Day Experience Schedule */}
-            <div className="space-y-6">
-              <h3 className="text-2xl font-black text-white flex items-center gap-2">
-                <Calendar className="w-6 h-6 text-amber-400" /> Day-by-Day Itinerary
+            <div className="space-y-4 sm:space-y-6">
+              <h3 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                <Calendar className="w-5 sm:w-6 h-5 sm:h-6 text-amber-400" /> Day-by-Day Itinerary
               </h3>
 
               {tripPlan.dailyPlan.map((day) => (
                 <div 
                   key={day.day} 
-                  className="glass-panel rounded-3xl p-6 border border-slate-800 shadow-2xl space-y-4"
+                  className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-800 shadow-2xl space-y-4"
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 border-b border-slate-800 pb-3.5 sm:pb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-rose-600 text-slate-950 font-black text-lg flex items-center justify-center shadow-md">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-500 to-rose-600 text-slate-950 font-black text-base sm:text-lg flex items-center justify-center shadow-md shrink-0">
                         {day.day}
                       </div>
                       <div>
-                        <h4 className="text-lg font-bold text-white">{day.theme}</h4>
-                        <p className="text-xs text-slate-400">Day {day.day} Timeline</p>
+                        <h4 className="text-base sm:text-lg font-bold text-white leading-tight">{day.theme}</h4>
+                        <p className="text-[11px] sm:text-xs text-slate-400">Day {day.day} Timeline</p>
                       </div>
                     </div>
 
                     <button
                       onClick={() => handleRegenerateDay(day.day, day.theme)}
                       disabled={regeneratingDay === day.day}
-                      className="px-3.5 py-1.5 rounded-xl border border-amber-500/40 text-xs font-semibold text-amber-300 hover:bg-amber-500/10 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      className="w-full xs:w-auto justify-center px-3.5 py-1.5 rounded-xl border border-amber-500/40 text-xs font-semibold text-amber-300 hover:bg-amber-500/10 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 active:scale-95"
                     >
                       {regeneratingDay === day.day ? (
                         <>
@@ -821,9 +858,9 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
                     {/* Morning */}
-                    <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
@@ -836,7 +873,7 @@ export default function Home() {
                         href={getMapsUrl(day.morning, tripPlan.destination)} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-semibold transition cursor-pointer"
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-semibold transition cursor-pointer w-full"
                       >
                         <MapPin className="w-3.5 h-3.5 text-amber-400" />
                         <span>Explore in Map</span>
@@ -845,7 +882,7 @@ export default function Home() {
                     </div>
 
                     {/* Afternoon */}
-                    <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs font-bold text-sky-400 flex items-center gap-1.5">
@@ -858,7 +895,7 @@ export default function Home() {
                         href={getMapsUrl(day.afternoon, tripPlan.destination)} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border border-sky-500/30 text-xs font-semibold transition cursor-pointer"
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border border-sky-500/30 text-xs font-semibold transition cursor-pointer w-full"
                       >
                         <MapPin className="w-3.5 h-3.5 text-sky-400" />
                         <span>Explore in Map</span>
@@ -867,7 +904,7 @@ export default function Home() {
                     </div>
 
                     {/* Evening */}
-                    <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs font-bold text-rose-400 flex items-center gap-1.5">
@@ -880,7 +917,7 @@ export default function Home() {
                         href={getMapsUrl(day.evening, tripPlan.destination)} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-semibold transition cursor-pointer"
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-semibold transition cursor-pointer w-full"
                       >
                         <MapPin className="w-3.5 h-3.5 text-rose-400" />
                         <span>Explore in Map</span>
@@ -890,7 +927,7 @@ export default function Home() {
                   </div>
 
                   {day.tips && (
-                    <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 flex items-start gap-2">
+                    <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 flex items-start gap-2">
                       <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                       <span><strong>Day Tip:</strong> {day.tips}</span>
                     </div>
@@ -914,30 +951,30 @@ export default function Home() {
               };
 
               return (
-                <div className="glass-panel rounded-3xl p-6 border border-slate-800 shadow-2xl">
-                  <h3 className="text-base font-bold text-emerald-400 mb-4 flex items-center gap-2">
-                    <PieChart className="w-5 h-5" /> Estimated Expenses Breakdown
+                <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-800 shadow-2xl">
+                  <h3 className="text-sm sm:text-base font-bold text-emerald-400 mb-3.5 sm:mb-4 flex items-center gap-2">
+                    <PieChart className="w-4 sm:w-5 h-4 sm:h-5 shrink-0" /> Estimated Expenses Breakdown
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
-                      <Hotel className="w-5 h-5 mx-auto mb-1 text-indigo-400" />
-                      <p className="text-[11px] text-slate-400 uppercase font-semibold">Stay & Hotel</p>
-                      <p className="text-sm font-bold text-white mt-1">{formatCostVal(breakdown?.stay, '35%')}</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 text-center">
+                    <div className="bg-slate-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800">
+                      <Hotel className="w-4 sm:w-5 h-4 sm:h-5 mx-auto mb-1 text-indigo-400" />
+                      <p className="text-[10px] sm:text-[11px] text-slate-400 uppercase font-semibold">Stay & Hotel</p>
+                      <p className="text-xs sm:text-sm font-bold text-white mt-0.5 sm:mt-1">{formatCostVal(breakdown?.stay, '35%')}</p>
                     </div>
-                    <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
-                      <Utensils className="w-5 h-5 mx-auto mb-1 text-amber-400" />
-                      <p className="text-[11px] text-slate-400 uppercase font-semibold">Food & Dhabas</p>
-                      <p className="text-sm font-bold text-white mt-1">{formatCostVal(breakdown?.food, '30%')}</p>
+                    <div className="bg-slate-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800">
+                      <Utensils className="w-4 sm:w-5 h-4 sm:h-5 mx-auto mb-1 text-amber-400" />
+                      <p className="text-[10px] sm:text-[11px] text-slate-400 uppercase font-semibold">Food & Dhabas</p>
+                      <p className="text-xs sm:text-sm font-bold text-white mt-0.5 sm:mt-1">{formatCostVal(breakdown?.food, '30%')}</p>
                     </div>
-                    <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
-                      <Car className="w-5 h-5 mx-auto mb-1 text-sky-400" />
-                      <p className="text-[11px] text-slate-400 uppercase font-semibold">Transport</p>
-                      <p className="text-sm font-bold text-white mt-1">{formatCostVal(breakdown?.transport, '20%')}</p>
+                    <div className="bg-slate-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800">
+                      <Car className="w-4 sm:w-5 h-4 sm:h-5 mx-auto mb-1 text-sky-400" />
+                      <p className="text-[10px] sm:text-[11px] text-slate-400 uppercase font-semibold">Transport</p>
+                      <p className="text-xs sm:text-sm font-bold text-white mt-0.5 sm:mt-1">{formatCostVal(breakdown?.transport, '20%')}</p>
                     </div>
-                    <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
-                      <Ticket className="w-5 h-5 mx-auto mb-1 text-emerald-400" />
-                      <p className="text-[11px] text-slate-400 uppercase font-semibold">Activities & Tickets</p>
-                      <p className="text-sm font-bold text-white mt-1">{formatCostVal(breakdown?.activities, '15%')}</p>
+                    <div className="bg-slate-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-800">
+                      <Ticket className="w-4 sm:w-5 h-4 sm:h-5 mx-auto mb-1 text-emerald-400" />
+                      <p className="text-[10px] sm:text-[11px] text-slate-400 uppercase font-semibold">Activities</p>
+                      <p className="text-xs sm:text-sm font-bold text-white mt-0.5 sm:mt-1">{formatCostVal(breakdown?.activities, '15%')}</p>
                     </div>
                   </div>
                 </div>
@@ -947,10 +984,10 @@ export default function Home() {
           </div>
         ) : (
           /* Empty state guide when no search has been done yet */
-          <div className="text-center py-16 px-4 glass-panel rounded-3xl border border-slate-800 max-w-2xl mx-auto">
-            <Compass className="w-12 h-12 text-amber-400 mx-auto mb-3 animate-pulse" />
-            <h3 className="text-xl font-bold text-white">Ready for your next journey?</h3>
-            <p className="text-sm text-slate-400 mt-2">
+          <div className="text-center py-12 sm:py-16 px-4 glass-panel rounded-2xl sm:rounded-3xl border border-slate-800 max-w-2xl mx-auto">
+            <Compass className="w-10 sm:w-12 h-10 sm:h-12 text-amber-400 mx-auto mb-3 animate-pulse" />
+            <h3 className="text-lg sm:text-xl font-bold text-white">Ready for your next journey?</h3>
+            <p className="text-xs sm:text-sm text-slate-400 mt-2">
               Enter a destination above (e.g. Manali, Varanasi, Jaipur, Dubai) and click <strong className="text-amber-400">Search</strong> to generate your complete AI itinerary.
             </p>
           </div>
@@ -960,14 +997,14 @@ export default function Home() {
 
       {/* ABOUT MODAL */}
       {activeModal === 'about' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-300">
-          <div className="relative max-w-lg w-full glass-panel rounded-3xl p-6 border border-slate-700 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-300">
+          <div className="relative max-w-lg w-full glass-panel rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-slate-700 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-amber-400" />
-                <h3 className="font-bold text-white text-lg">About घुम्मकड़ साथी</h3>
+                <h3 className="font-bold text-white text-base sm:text-lg">About घुम्मकड़ साथी</h3>
               </div>
-              <button onClick={() => setActiveModal(null)} className="p-1 rounded-lg text-slate-400 hover:text-white">
+              <button onClick={() => setActiveModal(null)} className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -988,34 +1025,34 @@ export default function Home() {
 
       {/* FAQ MODAL */}
       {activeModal === 'faq' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-300">
-          <div className="relative max-w-xl w-full glass-panel rounded-3xl p-6 border border-slate-700 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-300">
+          <div className="relative max-w-xl w-full glass-panel rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-slate-700 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
                 <HelpCircle className="w-5 h-5 text-amber-400" />
-                <h3 className="font-bold text-white text-lg">Frequently Asked Questions</h3>
+                <h3 className="font-bold text-white text-base sm:text-lg">Frequently Asked Questions</h3>
               </div>
-              <button onClick={() => setActiveModal(null)} className="p-1 rounded-lg text-slate-400 hover:text-white">
+              <button onClick={() => setActiveModal(null)} className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3 text-xs sm:text-sm">
-              <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800">
+              <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800">
                 <p className="font-bold text-amber-300 mb-1">1. How does Ghumakkad Saathi generate plans?</p>
                 <p className="text-slate-300 text-xs leading-relaxed">
                   We use Google Gemini AI tuned with local travel intelligence to generate tailored morning, afternoon, and evening experiences according to your budget and interests.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800">
+              <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800">
                 <p className="font-bold text-amber-300 mb-1">2. Can I export or print my itinerary?</p>
                 <p className="text-slate-300 text-xs leading-relaxed">
                   Yes! Click the <strong>PDF / Print</strong> button at any time to save a print-formatted PDF copy of your plan.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800">
+              <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800">
                 <p className="font-bold text-amber-300 mb-1">3. Are my itineraries auto-saved?</p>
                 <p className="text-slate-300 text-xs leading-relaxed">
                   Yes, your recent 10 generated itineraries are stored securely in your browser storage. Access them anytime via <strong>Saved Plans</strong>.
@@ -1028,13 +1065,13 @@ export default function Home() {
 
       {/* SUPPORT US MODAL */}
       {activeModal === 'support' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-300">
-          <div className="relative max-w-md w-full glass-panel rounded-3xl p-6 border border-slate-700 shadow-2xl space-y-4 text-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-300">
+          <div className="relative max-w-md w-full glass-panel rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-slate-700 shadow-2xl space-y-4 text-center">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-rose-600 flex items-center justify-center mx-auto shadow-lg">
               <Heart className="w-6 h-6 text-slate-950 fill-slate-950" />
             </div>
 
-            <h3 className="font-black text-white text-xl">Support घुम्मकड़ साथी</h3>
+            <h3 className="font-black text-white text-lg sm:text-xl">Support घुम्मकड़ साथी</h3>
             <p className="text-xs text-slate-300 leading-relaxed">
               If you love planning your travels with Ghumakkad Saathi, consider supporting our project or buying us a roadside tapri chai! ☕
             </p>
@@ -1042,7 +1079,7 @@ export default function Home() {
             <div className="space-y-2 pt-2">
               <button 
                 onClick={() => alert('Thank you for buying us a chai! ☕ Support link simulated.')}
-                className="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                className="w-full py-3 rounded-xl sm:rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-95"
               >
                 <Coffee className="w-4 h-4" /> Buy us a Tapri Chai (₹50)
               </button>
@@ -1052,13 +1089,13 @@ export default function Home() {
                   navigator.clipboard?.writeText(window.location.href);
                   alert('Link copied! Share Ghumakkad Saathi with your friends.');
                 }}
-                className="w-full py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3 rounded-xl sm:rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >
                 <Share2 className="w-4 h-4 text-indigo-400" /> Share with Friends
               </button>
             </div>
 
-            <button onClick={() => setActiveModal(null)} className="text-xs text-slate-400 hover:underline pt-2 block mx-auto">
+            <button onClick={() => setActiveModal(null)} className="text-xs text-slate-400 hover:underline pt-2 block mx-auto py-1 px-3">
               Close
             </button>
           </div>
@@ -1067,33 +1104,45 @@ export default function Home() {
 
       {/* LIGHTBOX MODAL */}
       {activeModal === 'lightbox' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="relative max-w-5xl w-full bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 shadow-2xl">
-            <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="relative max-w-5xl w-full bg-slate-900 rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800 shadow-2xl">
+            <div className="p-3.5 sm:p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-400" />
-                <h3 className="font-bold text-white text-lg">घुम्मकड़ साथी — Official Wallpaper</h3>
+                <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 text-amber-400" />
+                <h3 className="font-bold text-white text-sm sm:text-lg">घुम्मकड़ साथी — Official Artwork</h3>
               </div>
               <button onClick={() => setActiveModal(null)} className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-2 bg-black flex items-center justify-center max-h-[75vh] overflow-hidden">
-              <img
-                src="/ghumakkad-saathi.jpg"
-                alt="घुम्मकड़ साथी Artwork"
-                className="max-h-[70vh] w-auto object-contain rounded-xl shadow-lg"
-              />
+            <div className="p-2 bg-black flex items-center justify-center max-h-[65vh] sm:max-h-[75vh] overflow-hidden">
+              <picture className="max-h-[60vh] sm:max-h-[70vh] w-auto">
+                <source media="(max-width: 639px)" srcSet="/ghumakkad-saathi-mobile.jpg" />
+                <img
+                  src="/ghumakkad-saathi.jpg"
+                  alt="घुम्मकड़ साथी Artwork"
+                  className="max-h-[60vh] sm:max-h-[70vh] w-auto object-contain rounded-xl shadow-lg mx-auto"
+                />
+              </picture>
             </div>
-            <div className="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-              <p>Roadside India Nostalgia • Highway Dhaba & Rainy Highway</p>
-              <a
-                href="/ghumakkad-saathi.jpg"
-                download="ghumakkad-saathi-wallpaper.jpg"
-                className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition flex items-center gap-1.5"
-              >
-                <Download className="w-3.5 h-3.5" /> Download Wallpaper
-              </a>
+            <div className="p-3.5 sm:p-4 bg-slate-950 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs text-slate-400">
+              <p className="text-center sm:text-left text-[11px] sm:text-xs">Roadside India Nostalgia • Highway Dhaba & Rainy Highway</p>
+              <div className="flex items-center gap-2">
+                <a
+                  href="/ghumakkad-saathi-mobile.jpg"
+                  download="ghumakkad-saathi-mobile.jpg"
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold transition flex items-center gap-1.5 shrink-0 text-xs active:scale-95"
+                >
+                  <Download className="w-3.5 h-3.5" /> Mobile HD
+                </a>
+                <a
+                  href="/ghumakkad-saathi.jpg"
+                  download="ghumakkad-saathi-wallpaper.jpg"
+                  className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition flex items-center gap-1.5 shrink-0 active:scale-95 text-xs"
+                >
+                  <Download className="w-3.5 h-3.5" /> Desktop HD
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -1106,19 +1155,19 @@ export default function Home() {
             className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity" 
             onClick={() => setActiveModal(null)} 
           />
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-            <div className="w-screen max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl p-6 flex flex-col text-slate-100">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
+            <div className="w-screen max-w-xs xs:max-w-sm sm:max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl p-4 sm:p-6 flex flex-col text-slate-100">
+              <div className="flex items-center justify-between pb-3.5 sm:pb-4 border-b border-slate-800">
                 <div className="flex items-center gap-2">
                   <History className="w-5 h-5 text-indigo-400" />
-                  <h3 className="font-bold text-white text-lg">Saved Trips History</h3>
+                  <h3 className="font-bold text-white text-base sm:text-lg">Saved Trips History</h3>
                 </div>
-                <button onClick={() => setActiveModal(null)} className="p-1 rounded-lg text-slate-400 hover:text-white">
+                <button onClick={() => setActiveModal(null)} className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="mt-4 flex-1 overflow-y-auto space-y-3">
+              <div className="mt-4 flex-1 overflow-y-auto space-y-2.5 sm:space-y-3 pr-0.5">
                 {savedTrips.length === 0 ? (
                   <div className="text-center py-12 text-slate-500">
                     <History className="w-10 h-10 mx-auto mb-2 text-slate-600" />
@@ -1133,16 +1182,17 @@ export default function Home() {
                         setActiveModal(null);
                         setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth' }), 200);
                       }}
-                      className="p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/40 transition cursor-pointer flex items-center justify-between"
+                      className="p-3.5 sm:p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/40 transition cursor-pointer flex items-center justify-between gap-2 active:scale-[0.98]"
                     >
-                      <div className="space-y-1">
-                        <h4 className="font-bold text-white">{saved.destination}</h4>
-                        <p className="text-xs text-slate-400">{saved.duration} • {saved.estimatedCost}</p>
+                      <div className="space-y-0.5 min-w-0">
+                        <h4 className="font-bold text-white text-sm sm:text-base truncate">{saved.destination}</h4>
+                        <p className="text-[11px] sm:text-xs text-slate-400 truncate">{saved.duration} • {saved.estimatedCost}</p>
                       </div>
 
                       <button
                         onClick={(e) => deleteSavedTrip(saved.id, e)}
-                        className="p-2 text-slate-400 hover:text-red-400 rounded-lg"
+                        className="p-2 text-slate-400 hover:text-red-400 rounded-lg shrink-0"
+                        title="Delete trip"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

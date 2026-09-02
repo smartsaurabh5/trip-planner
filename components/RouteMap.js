@@ -69,7 +69,7 @@ function RouteMapComponent({ mapData, mapCoordinates, coordinates, destination }
   const spots = Array.isArray(data?.spots) ? data.spots : [];
 
   return (
-    <div className="w-full h-[400px] rounded-2xl overflow-hidden border border-slate-700/60 shadow-lg relative z-0 bg-slate-900">
+    <div className="w-full h-[280px] xs:h-[340px] sm:h-[380px] md:h-[420px] rounded-2xl overflow-hidden border border-slate-700/60 shadow-lg relative z-0 bg-slate-900">
       <MapContainer
         center={centerPosition}
         zoom={12}
