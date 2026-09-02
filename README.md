@@ -1,20 +1,23 @@
 # 🌍 AI Travel Planner & Itinerary Generator
 
-An intelligent full-stack travel planning application built with **Next.js (App Router)** and powered by **Google Gemini API (`gemini-3.6-flash`)**. It generates hyper-personalized, day-by-day travel itineraries based on destination, duration, budget tier, traveler count, language preferences, and interests.
+An intelligent full-stack travel planning application built with **Next.js (App Router)** and powered by **Google Gemini API (`gemini-3.6-flash`)**. It generates hyper-personalized, weather-synced travel itineraries with interactive route maps, multi-currency budget breakdowns, scam warnings, and offline multi-trip caching.
 
 ---
 
 ## ✨ Key Features
 
-- **Personalized Day-by-Day Planning:** Structured morning, afternoon, and evening breakdowns with local sightseeing and dining spots.
-- **Dynamic Budget Breakdown Visualizer:** Category-wise percentage & cost estimation cards for Stay, Food, Transport, and Activities.
+- **Personalized Day-by-Day Planning:** Detailed morning, afternoon, and evening breakdowns with local dining spots and transportation tips.
+- **Interactive Route Map:** In-app visual map powered by **Leaflet & OpenStreetMap** with custom markers showing destination spots and daily stops.
+- **Interactive Packing Checklist:** Dynamic checklist with live progress tracking bar and custom item addition support.
+- **Multi-Currency Budget Projections:** Real-time localized cost estimation supporting **INR (₹)**, **USD ($)**, **EUR (€)**, **GBP (£)**, **AED (د.إ)**, and **JPY (¥)**.
+- **Dynamic Expense Breakdown:** Visual percentage and cost estimation cards for Stay, Food, Transport, and Activities.
+- **Weather Advisory & Climate Sync:** AI-generated temperature forecasts, climate summaries, and contextual clothing suggestions.
+- **Local Safety & Scam Alerts:** Warnings on common tourist traps, destination-specific scams, and local emergency helpline numbers.
 - **Single-Day Regeneration:** Granular AI regeneration to swap or customize individual days without re-generating the entire trip.
-- **Direct Google Maps Integration:** Quick 1-click links to search and navigate every recommended spot in Google Maps.
-- **Multi-Language Support:** Generate itineraries in **English**, **Hindi (हिंदी)**, or casual conversational **Hinglish**.
-- **Packing & Travel Tips:** Context-aware packing essentials and destination-specific travel tips.
-- **Export & Share:** 1-click **Save as PDF / Print** layout and **Copy to Clipboard** support.
-- **Structured JSON Schema:** Gemini API outputs are strictly enforced in valid JSON for seamless frontend rendering.
-- **Modern Responsive UI:** Built with Next.js App Router, Tailwind CSS, and Lucide React icons.
+- **Offline History Drawer:** LocalStorage-backed caching to save, switch, and manage previous trip itineraries with zero API overhead.
+- **Direct Google Maps Navigation:** Quick 1-click external navigation links for every spot.
+- **Multi-Language Engine:** Full support for **English**, **Hindi (हिंदी)**, and conversational **Hinglish**.
+- **Export & Share:** Print-ready PDF styling and 1-click clipboard export.
 
 ---
 
@@ -22,9 +25,10 @@ An intelligent full-stack travel planning application built with **Next.js (App 
 
 - **Framework:** Next.js (App Router, Turbopack)
 - **AI Model / SDK:** Google Gemini API (`@google/genai`, `gemini-3.6-flash`)
+- **Maps:** Leaflet & React-Leaflet (OpenStreetMap)
 - **Styling:** Tailwind CSS
 - **Icons:** Lucide React
-- **Validation & Parsing:** Zod & Native JSON Schemas
+- **Storage:** Browser `localStorage` Cache API
 
 ---
 
@@ -48,7 +52,7 @@ npm run dev
 ```
 
 ### 2. Setup Environment Variables
-Create a `.env.local` file in the root directory and add your API key:
+Create a `.env.local` file in the root directory:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
@@ -66,11 +70,13 @@ trip_planner/
 ├── app/
 │   ├── api/
 │   │   ├── plan-trip/
-│   │   │   └── route.js        # Full trip generation endpoint (Gemini 3.6 Flash)
+│   │   │   └── route.js        # Full trip generation with geo-coordinates
 │   │   └── regenerate-day/
 │   │       └── route.js        # Single-day customization endpoint
 │   ├── layout.js               # Root layout
-│   └── page.js                 # Complete interactive UI (Form, Maps, Visualizer, Print)
+│   └── page.js                 # Interactive UI (Form, Drawer, Checklist, Print)
+├── components/
+│   └── RouteMap.js             # Client-side interactive Leaflet map component
 ├── lib/
 │   └── gemini.js               # Google GenAI client instance
 ├── .env.local                  # Environment configuration (git-ignored)
