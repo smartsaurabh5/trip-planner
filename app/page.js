@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   MapPin, 
   Calendar, 
@@ -31,7 +31,11 @@ import {
   Thermometer,
   ShieldAlert,
   AlertTriangle,
-  PhoneCall
+  PhoneCall,
+  History,
+  Trash2,
+  X,
+  BookmarkCheck
 } from 'lucide-react';
 
 export default function Home() {
@@ -49,6 +53,45 @@ export default function Home() {
   const [tripPlan, setTripPlan] = useState(null);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+
+  // Saved Trips Drawer State
+  const [savedTrips, setSavedTrips] = useState([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // Load saved trips from localStorage on client mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('trip_planner_history');
+      if (stored) {
+        setSavedTrips(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error('Failed to load trips from storage', e);
+    }
+  }, []);
+
+  // Save current trip to history
+  const saveTripToHistory = (newPlan) => {
+    const tripWithId = {
+      ...newPlan,
+      id: Date.now().toString(),
+      savedAt: new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      })
+    };
+    const updated = [tripWithId, ...savedTrips.filter(t => t.destination !== newPlan.destination)].slice(0, 10);
+    setSavedTrips(updated);
+    localStorage.setItem('trip_planner_history', JSON.stringify(updated));
+  };
+
+  const deleteSavedTrip = (id, e) => {
+    e.stopPropagation();
+    const updated = savedTrips.filter((t) => t.id !== id);
+    setSavedTrips(updated);
+    localStorage.setItem('trip_planner_history', JSON.stringify(updated));
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -73,6 +116,7 @@ export default function Home() {
       }
 
       setTripPlan(data.data);
+      saveTripToHistory(data.data);
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
@@ -99,10 +143,11 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to regenerate day');
 
-      setTripPlan((prev) => ({
-        ...prev,
-        dailyPlan: prev.dailyPlan.map((d) => (d.day === dayNumber ? data.data : d)),
-      }));
+      const updatedDailyPlan = tripPlan.dailyPlan.map((d) => (d.day === dayNumber ? data.data : d));
+      const updatedTrip = { ...tripPlan, dailyPlan: updatedDailyPlan };
+      
+      setTripPlan(updatedTrip);
+      saveTripToHistory(updatedTrip);
     } catch (err) {
       alert(err.message || 'Could not regenerate this day. Try again.');
     } finally {
@@ -132,16 +177,32 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 md:px-8 print:bg-white print:p-0">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <header className="text-center mb-10 print:hidden">
-          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-700 text-sm font-medium mb-3">
+        {/* Top App Bar with Saved Trips Toggle */}
+        <div className="flex items-center justify-between mb-8 print:hidden">
+          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-700 text-sm font-medium">
             <Sparkles className="w-4 h-4" /> AI Travel Assistant
           </div>
+          <button
+            onClick={() => setIsDrawerOpen(true)}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-medium transition shadow-xs cursor-pointer"
+          >
+            <History className="w-4 h-4 text-indigo-600" />
+            <span>Saved Plans</span>
+            {savedTrips.length > 0 && (
+              <span className="ml-1 bg-indigo-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                {savedTrips.length}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Header */}
+        <header className="text-center mb-10 print:hidden">
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900">
             Plan Your Next Adventure
           </h1>
           <p className="text-slate-600 mt-2 text-base md:text-lg">
-            Personalized, day-by-day travel itineraries powered by Gemini AI.
+            Personalized, weather-synced travel itineraries powered by Gemini AI.
           </p>
         </header>
 
@@ -285,7 +346,7 @@ export default function Home() {
             <div className="flex items-center justify-end gap-3 print:hidden">
               <button
                 onClick={handleCopy}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-medium transition cursor-pointer shadow-sm"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-medium transition cursor-pointer shadow-xs"
               >
                 {copied ? (
                   <>
@@ -299,7 +360,7 @@ export default function Home() {
               </button>
               <button
                 onClick={handlePrint}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium transition cursor-pointer shadow-sm"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium transition cursor-pointer shadow-xs"
               >
                 <Printer className="w-4 h-4" /> Save as PDF / Print
               </button>
@@ -309,9 +370,14 @@ export default function Home() {
             <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm print:border-none print:shadow-none print:p-0">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
-                    {tripPlan.destination}
-                  </h2>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
+                      {tripPlan.destination}
+                    </h2>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-md">
+                      <BookmarkCheck className="w-3 h-3" /> Auto-Saved
+                    </span>
+                  </div>
                   <p className="text-slate-500 font-medium">{tripPlan.duration} Trip</p>
                 </div>
                 <div className="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl print:bg-transparent print:border-none">
@@ -366,7 +432,6 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Common Scams */}
                   <div className="bg-white/80 backdrop-blur-xs p-4 rounded-xl border border-amber-200/60">
                     <p className="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5 mb-2.5">
                       <AlertTriangle className="w-4 h-4 text-amber-600" /> Common Tourist Traps & Scams
@@ -381,7 +446,6 @@ export default function Home() {
                     </ul>
                   </div>
 
-                  {/* Safe Travel Tips */}
                   <div className="bg-white/80 backdrop-blur-xs p-4 rounded-xl border border-amber-200/60">
                     <p className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1.5 mb-2.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Safety Recommendations
@@ -580,6 +644,92 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Saved Trips Slide-over Drawer */}
+      {isDrawerOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden print:hidden">
+          <div 
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity" 
+            onClick={() => setIsDrawerOpen(false)} 
+          />
+          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div className="w-screen max-w-md bg-white shadow-2xl p-6 flex flex-col">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+                <div className="flex items-center gap-2">
+                  <History className="w-5 h-5 text-indigo-600" />
+                  <h3 className="font-bold text-slate-900 text-lg">Saved Trips History</h3>
+                </div>
+                <button
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="mt-4 flex-1 overflow-y-auto space-y-3">
+                {savedTrips.length === 0 ? (
+                  <div className="text-center py-12 text-slate-500">
+                    <History className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+                    <p className="text-sm font-medium">No saved trips yet.</p>
+                    <p className="text-xs text-slate-400 mt-1">Generated plans will automatically appear here.</p>
+                  </div>
+                ) : (
+                  savedTrips.map((saved) => (
+                    <div
+                      key={saved.id}
+                      onClick={() => {
+                        setTripPlan(saved);
+                        setIsDrawerOpen(false);
+                      }}
+                      className={`p-4 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+                        tripPlan?.destination === saved.destination
+                          ? 'border-indigo-500 bg-indigo-50/50'
+                          : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-xs'
+                      }`}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-slate-900">{saved.destination}</h4>
+                          <span className="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium">
+                            {saved.duration}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500">{saved.estimatedCost}</p>
+                        <p className="text-[10px] text-slate-400">Created: {saved.savedAt}</p>
+                      </div>
+
+                      <button
+                        onClick={(e) => deleteSavedTrip(saved.id, e)}
+                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                        title="Delete this saved plan"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {savedTrips.length > 0 && (
+                <div className="pt-4 border-t border-slate-100">
+                  <button
+                    onClick={() => {
+                      if (confirm('Clear all saved trips from history?')) {
+                        setSavedTrips([]);
+                        localStorage.removeItem('trip_planner_history');
+                      }
+                    }}
+                    className="w-full py-2.5 text-xs text-red-600 hover:bg-red-50 rounded-xl transition font-medium cursor-pointer"
+                  >
+                    Clear History
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
