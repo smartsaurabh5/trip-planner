@@ -17,12 +17,12 @@ export async function POST(request) {
       language === 'Hindi' 
         ? 'Generate all descriptive text, summaries, and activity suggestions in pure Hindi (Devanagari script).' 
         : language === 'Hinglish'
-        ? 'Generate all descriptive text, summaries, and activity suggestions in casual conversational Hinglish (Hindi written in Roman English script, e.g., "Subah 9 baje Manali Mall Road ghumne niklein...").'
+        ? 'Generate all descriptive text, summaries, and activity suggestions in casual conversational Hinglish (Hindi written in Roman English script).'
         : 'Generate all content in clear English.';
 
     const prompt = `
 You are an expert AI Travel Guide.
-Generate a structured, highly detailed, realistic trip itinerary based on the following preferences:
+Generate a structured, highly detailed, realistic trip itinerary with weather-aware recommendations based on:
 - Destination: ${destination}
 - Duration: ${days} days
 - Budget Level: ${budget || 'Moderate'}
@@ -30,12 +30,18 @@ Generate a structured, highly detailed, realistic trip itinerary based on the fo
 - Interests & Preferences: ${interests || 'General sightseeing, local food, culture'}
 - Language Requirement: ${langInstruction}
 
-Return the response strictly as valid JSON with this exact structure:
+Analyze destination typical climate and provide weather expectations and synced packing tips.
+Return strictly valid JSON with this exact schema:
 {
   "destination": "${destination}",
   "duration": "${days} Days",
   "summary": "Short engaging summary of the trip",
   "estimatedCost": "Total approximate budget string (e.g. ₹15,000 - ₹20,000)",
+  "weather": {
+    "temperature": "Expected temperature range (e.g. 18°C - 26°C)",
+    "condition": "Condition summary (e.g. Sunny with light evening breeze)",
+    "clothingTip": "Specific clothing advice based on climate"
+  },
   "budgetBreakdown": {
     "stay": { "percentage": 35, "estimatedAmount": "Estimated cost for hotels/stays" },
     "food": { "percentage": 25, "estimatedAmount": "Estimated cost for dining/street food" },
@@ -45,14 +51,14 @@ Return the response strictly as valid JSON with this exact structure:
   "dailyPlan": [
     {
       "day": 1,
-      "theme": "Theme of the day (e.g. Arrival & Old Town Exploration)",
+      "theme": "Theme of the day",
       "morning": "Morning activity details with places to see",
       "afternoon": "Afternoon activity and lunch recommendation",
       "evening": "Evening activity and dinner recommendation",
       "tips": "Practical tips or transport suggestions for this day"
     }
   ],
-  "packingEssentials": ["Item 1", "Item 2", "Item 3"],
+  "packingEssentials": ["Item 1", "Item 2", "Item 3", "Weather-specific item"],
   "importantTips": ["Tip 1", "Tip 2", "Tip 3"]
 }
 `;

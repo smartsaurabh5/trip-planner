@@ -25,7 +25,10 @@ import {
   PieChart,
   ExternalLink,
   Languages,
-  RefreshCw
+  RefreshCw,
+  CloudSun,
+  Shirt,
+  Thermometer
 } from 'lucide-react';
 
 export default function Home() {
@@ -316,6 +319,35 @@ export default function Home() {
               <p className="mt-4 text-slate-600 leading-relaxed">{tripPlan.summary}</p>
             </div>
 
+            {/* Weather Advisory Card */}
+            {tripPlan.weather && (
+              <div className="bg-gradient-to-r from-sky-50 to-indigo-50/50 rounded-2xl p-6 border border-sky-100 shadow-sm">
+                <h3 className="text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
+                  <CloudSun className="w-5 h-5 text-sky-600" /> Weather Advisory & Clothing Guide
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white/80 backdrop-blur-xs p-3.5 rounded-xl border border-sky-100/60">
+                    <p className="text-xs font-semibold text-sky-800 flex items-center gap-1.5 mb-1">
+                      <Thermometer className="w-3.5 h-3.5 text-sky-600" /> Expected Temp
+                    </p>
+                    <p className="text-sm font-bold text-slate-800">{tripPlan.weather.temperature || 'Moderate'}</p>
+                  </div>
+                  <div className="bg-white/80 backdrop-blur-xs p-3.5 rounded-xl border border-sky-100/60">
+                    <p className="text-xs font-semibold text-sky-800 flex items-center gap-1.5 mb-1">
+                      <CloudSun className="w-3.5 h-3.5 text-sky-600" /> Conditions
+                    </p>
+                    <p className="text-sm font-semibold text-slate-800">{tripPlan.weather.condition || 'Pleasant'}</p>
+                  </div>
+                  <div className="bg-white/80 backdrop-blur-xs p-3.5 rounded-xl border border-sky-100/60">
+                    <p className="text-xs font-semibold text-sky-800 flex items-center gap-1.5 mb-1">
+                      <Shirt className="w-3.5 h-3.5 text-sky-600" /> What to Wear
+                    </p>
+                    <p className="text-sm font-semibold text-slate-800">{tripPlan.weather.clothingTip || 'Casual wear'}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Budget Breakdown Visualizer */}
             {tripPlan.budgetBreakdown && (
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
@@ -468,7 +500,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm print:border-slate-300">
                 <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <Luggage className="w-5 h-5 text-indigo-600" /> Packing Essentials
+                  <Luggage className="w-5 h-5 text-indigo-600" /> Weather-Synced Packing
                 </h4>
                 <ul className="space-y-2">
                   {tripPlan.packingEssentials?.map((pack, idx) => (
