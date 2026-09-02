@@ -57,8 +57,17 @@ Return the response strictly as valid JSON matching this exact structure:
     return NextResponse.json({ success: true, data: newDayPlan });
   } catch (error) {
     console.error('Regenerate Day API Error:', error);
+    const errorMsg = error.message || error.toString() || '';
+    
+    if (errorMsg.includes('429') || errorMsg.includes('Quota exceeded') || errorMsg.includes('RESOURCE_EXHAUSTED')) {
+      return NextResponse.json(
+        { error: 'Gemini API Daily Quota Exceeded (20 requests/day limit reached). Please create a new free API Key at https://aistudio.google.com and update GEMINI_API_KEY in .env.local.' },
+        { status: 429 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Failed to regenerate day plan.' },
+      { error: errorMsg || 'Failed to regenerate day plan.' },
       { status: 500 }
     );
   }

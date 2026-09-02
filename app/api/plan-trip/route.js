@@ -118,8 +118,17 @@ Return strictly valid JSON with this exact schema:
     return NextResponse.json({ success: true, data: tripPlan });
   } catch (error) {
     console.error('Trip Planning API Error:', error);
+    const errorMsg = error.message || error.toString() || '';
+    
+    if (errorMsg.includes('429') || errorMsg.includes('Quota exceeded') || errorMsg.includes('RESOURCE_EXHAUSTED')) {
+      return NextResponse.json(
+        { error: 'Gemini API Daily Quota Exceeded (20 requests/day limit reached). Please create a new free API Key at https://aistudio.google.com and update GEMINI_API_KEY in .env.local.' },
+        { status: 429 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Failed to generate itinerary. Please check API key or prompt.' },
+      { error: errorMsg || 'Failed to generate itinerary. Please check API key.' },
       { status: 500 }
     );
   }
