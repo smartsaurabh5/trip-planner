@@ -4,7 +4,7 @@ import { ai } from '@/lib/gemini';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { destination, days, budget, travelers, interests, language } = body;
+    const { destination, days, budget, travelers, interests, language, currency } = body;
 
     if (!destination || !days) {
       return NextResponse.json(
@@ -12,6 +12,8 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+
+    const selectedCurrency = currency || 'INR (₹)';
 
     const langInstruction = 
       language === 'Hindi' 
@@ -29,17 +31,19 @@ Generate a structured, highly detailed, realistic trip itinerary with safety pre
 - Number of Travelers: ${travelers || 'Solo / 1 Person'}
 - Interests & Preferences: ${interests || 'General sightseeing, local food, culture'}
 - Language Requirement: ${langInstruction}
+- Preferred Currency: ${selectedCurrency} (Format ALL costs, budgets, and breakdown estimations strictly using this currency symbol and format)
 
-Include weather expectations, practical budget breakdowns, and explicit local safety advice (common scams, safe areas, emergency numbers).
+Include weather expectations, practical budget breakdowns, and explicit local safety advice.
 Return strictly valid JSON with this exact schema:
 {
   "destination": "${destination}",
   "duration": "${days} Days",
+  "currency": "${selectedCurrency}",
   "summary": "Short engaging summary of the trip",
-  "estimatedCost": "Total approximate budget string (e.g. ₹15,000 - ₹20,000)",
+  "estimatedCost": "Total approximate budget formatted in ${selectedCurrency}",
   "weather": {
     "temperature": "Expected temperature range (e.g. 18°C - 26°C)",
-    "condition": "Condition summary (e.g. Sunny with light evening breeze)",
+    "condition": "Condition summary (e.g. Sunny with light breeze)",
     "clothingTip": "Specific clothing advice based on climate"
   },
   "safetyAdvisory": {
@@ -48,10 +52,10 @@ Return strictly valid JSON with this exact schema:
     "emergencyContact": "Local emergency dial number(s)"
   },
   "budgetBreakdown": {
-    "stay": { "percentage": 35, "estimatedAmount": "Estimated cost for hotels/stays" },
-    "food": { "percentage": 25, "estimatedAmount": "Estimated cost for dining/street food" },
-    "transport": { "percentage": 20, "estimatedAmount": "Estimated cost for local travel/cabs" },
-    "activities": { "percentage": 20, "estimatedAmount": "Estimated cost for entry tickets/experiences" }
+    "stay": { "percentage": 35, "estimatedAmount": "Estimated cost in ${selectedCurrency}" },
+    "food": { "percentage": 25, "estimatedAmount": "Estimated cost in ${selectedCurrency}" },
+    "transport": { "percentage": 20, "estimatedAmount": "Estimated cost in ${selectedCurrency}" },
+    "activities": { "percentage": 20, "estimatedAmount": "Estimated cost in ${selectedCurrency}" }
   },
   "dailyPlan": [
     {

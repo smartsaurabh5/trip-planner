@@ -4,7 +4,7 @@ import { ai } from '@/lib/gemini';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { destination, dayNumber, currentTheme, budget, interests, language } = body;
+    const { destination, dayNumber, currentTheme, budget, interests, language, currency } = body;
 
     if (!destination || !dayNumber) {
       return NextResponse.json(
@@ -12,6 +12,8 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+
+    const selectedCurrency = currency || 'INR (₹)';
 
     const langInstruction = 
       language === 'Hindi' 
@@ -26,6 +28,7 @@ Generate a fresh, unique, alternative day plan for Day ${dayNumber} of a trip to
 Preferences:
 - Current/Previous Theme: ${currentTheme || 'Exploration'}
 - Budget Level: ${budget || 'Moderate'}
+- Preferred Currency: ${selectedCurrency}
 - Interests: ${interests || 'Sightseeing, food, culture'}
 - Language Requirement: ${langInstruction}
 

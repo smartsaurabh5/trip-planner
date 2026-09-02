@@ -35,7 +35,8 @@ import {
   History,
   Trash2,
   X,
-  BookmarkCheck
+  BookmarkCheck,
+  Banknote
 } from 'lucide-react';
 
 export default function Home() {
@@ -45,7 +46,8 @@ export default function Home() {
     budget: 'Moderate',
     travelers: '1 Person',
     interests: 'Sightseeing, Local Food, Photography',
-    language: 'English'
+    language: 'English',
+    currency: 'INR (₹)'
   });
 
   const [loading, setLoading] = useState(false);
@@ -58,7 +60,6 @@ export default function Home() {
   const [savedTrips, setSavedTrips] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Load saved trips from localStorage on client mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem('trip_planner_history');
@@ -70,7 +71,6 @@ export default function Home() {
     }
   }, []);
 
-  // Save current trip to history
   const saveTripToHistory = (newPlan) => {
     const tripWithId = {
       ...newPlan,
@@ -137,6 +137,7 @@ export default function Home() {
           budget: formData.budget,
           interests: formData.interests,
           language: formData.language,
+          currency: formData.currency,
         }),
       });
 
@@ -177,7 +178,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 md:px-8 print:bg-white print:p-0">
       <div className="max-w-4xl mx-auto">
-        {/* Top App Bar with Saved Trips Toggle */}
+        {/* Top App Bar */}
         <div className="flex items-center justify-between mb-8 print:hidden">
           <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-700 text-sm font-medium">
             <Sparkles className="w-4 h-4" /> AI Travel Assistant
@@ -220,7 +221,7 @@ export default function Home() {
                   type="text"
                   name="destination"
                   required
-                  placeholder="e.g., Manali, Paris, Kyoto"
+                  placeholder="e.g., Manali, Paris, Dubai, Kyoto"
                   value={formData.destination}
                   onChange={handleChange}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
@@ -279,6 +280,26 @@ export default function Home() {
                 </select>
               </div>
 
+              {/* Currency Selection */}
+              <div>
+                <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                  <Banknote className="w-4 h-4 text-indigo-600" /> Preferred Currency
+                </label>
+                <select
+                  name="currency"
+                  value={formData.currency}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white"
+                >
+                  <option value="INR (₹)">INR (₹ - Indian Rupee)</option>
+                  <option value="USD ($)">USD ($ - US Dollar)</option>
+                  <option value="EUR (€)">EUR (€ - Euro)</option>
+                  <option value="GBP (£)">GBP (£ - British Pound)</option>
+                  <option value="AED (د.إ)">AED (د.إ - UAE Dirham)</option>
+                  <option value="JPY (¥)">JPY (¥ - Japanese Yen)</option>
+                </select>
+              </div>
+
               {/* Language Selection */}
               <div>
                 <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
@@ -295,21 +316,21 @@ export default function Home() {
                   <option value="Hinglish">Hinglish (Casual Hindi in English)</option>
                 </select>
               </div>
+            </div>
 
-              {/* Interests */}
-              <div>
-                <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-                  <Compass className="w-4 h-4 text-indigo-600" /> Interests & Vibes
-                </label>
-                <input
-                  type="text"
-                  name="interests"
-                  placeholder="e.g., Adventure, Cafes, Historical sites, Nightlife"
-                  value={formData.interests}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                />
-              </div>
+            {/* Interests */}
+            <div>
+              <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                <Compass className="w-4 h-4 text-indigo-600" /> Interests & Vibes
+              </label>
+              <input
+                type="text"
+                name="interests"
+                placeholder="e.g., Adventure, Cafes, Historical sites, Nightlife"
+                value={formData.interests}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+              />
             </div>
 
             {/* Submit Button */}
@@ -466,9 +487,16 @@ export default function Home() {
             {/* Budget Breakdown Visualizer */}
             {tripPlan.budgetBreakdown && (
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <PieChart className="w-5 h-5 text-indigo-600" /> Estimated Expense Breakdown
-                </h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <PieChart className="w-5 h-5 text-indigo-600" /> Estimated Expense Breakdown
+                  </h3>
+                  {tripPlan.currency && (
+                    <span className="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg">
+                      Currency: {tripPlan.currency}
+                    </span>
+                  )}
+                </div>
                 
                 <div className="w-full h-3 bg-slate-100 rounded-full flex overflow-hidden mb-6">
                   <div style={{ width: `${tripPlan.budgetBreakdown.stay?.percentage || 35}%` }} className="bg-blue-500" title="Stay" />
