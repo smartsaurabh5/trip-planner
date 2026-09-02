@@ -1,5 +1,7 @@
 # 🚗 घुम्मकड़ साथी (Ghumakkad Saathi) — AI Travel Planner & Roadtrip Companion
 
+# Ghumakkad  sathi is live at : https://ghumakkad-saathi.onrender.com
+
 An intelligent full-stack Indian travel planning application built with **Next.js 16 (App Router)**, **Tailwind CSS**, and powered by **Google Gemini AI (`gemini-3.6-flash`)**. It generates hyper-personalized, weather-synced travel itineraries with interactive route maps, target budget allocation, real-time live visitor tracking, ambient roadtrip audio, and custom manual trip inputs.
 
 ---
@@ -62,7 +64,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 > Get your free Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).  
-> Open [https://ghumakkad-saathi.onrender.com](http://localhost:3000) in your browser to view the application.
+> Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
 ---
 
