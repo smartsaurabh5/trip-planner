@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ai } from '@/lib/gemini';
+import { generateStructuredJSON } from '@/lib/aiProvider';
 
 export async function POST(request) {
   try {
@@ -105,30 +105,15 @@ Return strictly valid JSON with this exact schema:
 }
 `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.6-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-      },
-    });
-
-    const tripPlan = JSON.parse(response.text);
+    const tripPlan = await generateStructuredJSON(prompt);
 
     return NextResponse.json({ success: true, data: tripPlan });
   } catch (error) {
     console.error('Trip Planning API Error:', error);
     const errorMsg = error.message || error.toString() || '';
     
-    if (errorMsg.includes('429') || errorMsg.includes('Quota exceeded') || errorMsg.includes('RESOURCE_EXHAUSTED')) {
-      return NextResponse.json(
-        { error: 'Gemini API Daily Quota Exceeded (20 requests/day limit reached). Please create a new free API Key at https://aistudio.google.com and update GEMINI_API_KEY in .env.local.' },
-        { status: 429 }
-      );
-    }
-
     return NextResponse.json(
-      { error: errorMsg || 'Failed to generate itinerary. Please check API key.' },
+      { error: errorMsg || 'Failed to generate itinerary. Please try again later.' },
       { status: 500 }
     );
   }

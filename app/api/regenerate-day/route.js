@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ai } from '@/lib/gemini';
+import { generateStructuredJSON } from '@/lib/aiProvider';
 
 export async function POST(request) {
   try {
@@ -44,27 +44,12 @@ Return the response strictly as valid JSON matching this exact structure:
 }
 `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.6-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-      },
-    });
-
-    const newDayPlan = JSON.parse(response.text);
+    const newDayPlan = await generateStructuredJSON(prompt);
 
     return NextResponse.json({ success: true, data: newDayPlan });
   } catch (error) {
     console.error('Regenerate Day API Error:', error);
     const errorMsg = error.message || error.toString() || '';
-    
-    if (errorMsg.includes('429') || errorMsg.includes('Quota exceeded') || errorMsg.includes('RESOURCE_EXHAUSTED')) {
-      return NextResponse.json(
-        { error: 'Gemini API Daily Quota Exceeded (20 requests/day limit reached). Please create a new free API Key at https://aistudio.google.com and update GEMINI_API_KEY in .env.local.' },
-        { status: 429 }
-      );
-    }
 
     return NextResponse.json(
       { error: errorMsg || 'Failed to regenerate day plan.' },
