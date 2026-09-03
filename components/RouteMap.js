@@ -32,13 +32,24 @@ const customIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
-// Component to handle map view positioning safely without DOM transition race conditions
+// Component to handle map view positioning and touchpad zoom isolation
 function MapController({ lat, lng }) {
   const map = useMap();
   const lastCenteredRef = useRef(null);
 
   useEffect(() => {
     if (!map || !map._container) return;
+
+    const container = map._container;
+
+    // Prevent touchpad pinch-zoom (ctrlKey + wheel) from zooming the entire browser window
+    const handleWheel = (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+      }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
 
     const key = `${lat}-${lng}`;
     if (lat && lng && lastCenteredRef.current !== key) {
@@ -55,6 +66,10 @@ function MapController({ lat, lng }) {
         console.warn('Leaflet map controller warning:', err);
       }
     }
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
   }, [lat, lng, map]);
 
   return null;
@@ -73,7 +88,7 @@ function RouteMapComponent({ mapData, mapCoordinates, coordinates, destination }
       <MapContainer
         center={centerPosition}
         zoom={12}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         doubleClickZoom={true}
         zoomAnimation={false}
         fadeAnimation={false}
